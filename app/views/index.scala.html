@@ -1,5 +1,9 @@
-@()
+@(matrix: String, message: String = "")
 
-@main("Welcome to Play") {
-  <h1>Welcome to Play!</h1>
-}
+	@main("Welcome to Checkers") {
+		<h1>Welcome to Checkers!</h1>
+		<pre>@matrix</pre>
+		<br>
+		<span>@message</span>
+		<br>
+	}
