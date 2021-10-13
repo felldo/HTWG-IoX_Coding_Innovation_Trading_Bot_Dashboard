@@ -1,0 +1,16 @@
+{
+  "short_name": "Trading Bot",
+  "name": "IoX Coding Innovation Trading Bot",
+  "icons": [
+    {
+      "src": "/images/coins-icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#FFFFFF"
+}
