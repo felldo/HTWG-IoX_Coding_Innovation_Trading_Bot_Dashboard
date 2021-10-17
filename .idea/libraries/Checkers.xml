@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Checkers">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/Checkers.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
