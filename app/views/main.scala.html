@@ -8,47 +8,27 @@
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		@* Here's where we render the page title `String`. *@
-	<title>@title</title>
-	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-	<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-	</head>
-	<body>
-		@* And here's where we render the `Html` object containing
-		* the page content. *@
-		@content
-	<br>
-	<form action="/move">
-		<label for="jumps">Jumps:</label>
-		<input type="text" id="jumps" name="jumps">
-
-		<button type="reset">Eingaben zurücksetzen</button>
-		<button type="submit">Eingaben absenden</button>
-	</form>
-
-	<form action="/new">
-		<label for="gamesize">New Game Size(8,10,12):</label>
-		<input type="text" id="gamesize" name="gamesize">
-		<button type="reset">Eingaben zurücksetzen</button>
-		<button type="submit">Eingaben absenden</button>
-	</form>
-
-	<form action="/undo">
-		<button type="submit">UNDO</button>
-	</form>
-
-	<form action="/redo">
-		<button type="submit">REDO</button>
-	</form>
-
-	<form action="/load">
-		<button type="submit">LOAD</button>
-	</form>
-
-	<form action="/save">
-		<button type="submit">SAVE</button>
-	</form>
-	<script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
-	</body>
+    <head>
+        <meta http-equiv="Content-Security-Policy" content="default-src *;
+   img-src * 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *;
+   style-src  'self' 'unsafe-inline' *">
+        @* Here's where we render the page title `String`. *@
+        <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+    </head>
+    <body>
+        @* And here's where we render the `Html` object containing
+        * the page content. *@
+        @content
+    <script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
+    <footer style="position: fixed;
+        bottom: 0px;">
+        <p><i>This project is for the university course "web application"</i></p>
+        <p><i>For rules see: <a href="http://localhost:9000/rules">Rules</a></i></p>
+        <p><i>Link to checkers Repo:
+            <a href="https://github.com/KILLEliteMaste/Checkers">Checkers Standalone game</a>
+            <a href="https://github.com/WollmannDaniel/Checkers-Play">Checkers Web Application</a></i> </p>
+    </footer>
+    </body>
 </html>

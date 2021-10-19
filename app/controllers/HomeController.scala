@@ -23,37 +23,41 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
 
   def index(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     println(controller.matrixToString)
-    Ok(views.html.index(controller.matrixToString))
+    println(controller.getGame.getField.getFieldMatrix)
+    Ok(views.html.index(controller.getGame.getField.getFieldMatrix,""))
   }
 
   def move(jumps: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("move " + jumps, controller)
-    Ok(views.html.index(controller.matrixToString, message))
+    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
   }
 
   def newGame(gamesize: Int): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("new " + gamesize, controller)
-    Ok(views.html.index(controller.matrixToString, message))
+    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
   }
 
   def undo(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("undo", controller)
-    Ok(views.html.index(controller.matrixToString, message))
+    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
   }
 
   def redo(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("redo", controller)
-    Ok(views.html.index(controller.matrixToString, message))
+    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
   }
 
   def load(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("load", controller)
-    Ok(views.html.index(controller.matrixToString, message))
+    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
   }
 
   def save(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("save", controller)
-    Ok(views.html.index(controller.matrixToString, message))
+    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
   }
 
+  def rules(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.rules())
+  }
 }

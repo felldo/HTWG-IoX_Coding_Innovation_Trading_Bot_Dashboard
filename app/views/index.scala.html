@@ -1,9 +1,67 @@
-@(matrix: String, message: String = "")
+@import model.Cell
+@import model.FieldMatrix
+@(fieldMatrix: FieldMatrix[Option[Cell]], message: String = "")
 
-	@main("Welcome to Checkers") {
-		<h1>Welcome to Checkers!</h1>
-		<pre>@matrix</pre>
-		<br>
-		<span>@message</span>
-		<br>
-	}
+    @main("Welcome to Checkers") {
+        <h1>Welcome to Checkers!</h1>
+        <table bgcolor="black" cellspacing="2" cellpadding="4">
+            <tr bgcolor="white">
+                <td>&nbsp;&nbsp;</td>
+                @for(size <- 0 until fieldMatrix.getSize) {
+                    <td><b>@size</b></td>
+                }
+            </tr>
+            @for((vector, idx) <- fieldMatrix.getRows.zipWithIndex) {
+                    <!--Rows-->
+
+                <tr bgcolor="white">
+                    <td ><b>@idx</b></td>
+                    @for(cells: Option[Cell] <- vector) {
+                            <!-- Cells in single rows-->
+                        <td>
+                            @if(cells.isDefined) {
+                                @cells.get.getValue
+                            }
+                            @if(cells.isEmpty) {
+                                    &nbsp;&nbsp;
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+
+        </table>
+        <br>
+        <span>@message</span>
+        <br>
+        <form action="/move">
+            <label for="jumps">Jumps:</label>
+            <input type="text" id="jumps" name="jumps">
+
+            <button type="reset">Eingaben zurücksetzen</button>
+            <button type="submit">Eingaben absenden</button>
+        </form>
+
+        <form action="/new">
+            <label for="gamesize">New Game Size(8,10,12):</label>
+            <input type="text" id="gamesize" name="gamesize">
+            <button type="reset">Eingaben zurücksetzen</button>
+            <button type="submit">Eingaben absenden</button>
+        </form>
+
+        <form action="/undo">
+            <button type="submit">UNDO</button>
+        </form>
+
+        <form action="/redo">
+            <button type="submit">REDO</button>
+        </form>
+
+        <form action="/load">
+            <button type="submit">LOAD</button>
+        </form>
+
+        <form action="/save">
+            <button type="submit">SAVE</button>
+        </form>
+    }
