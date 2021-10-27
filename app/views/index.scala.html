@@ -2,30 +2,65 @@
 @import model.FieldMatrix
 @(fieldMatrix: FieldMatrix[Option[Cell]], message: String = "")
 
-    @main("Welcome to Checkers") {
+@main("Welcome to Checkers", "index.css") {
+    <div id="outerContainer">
+        <nav role="navigation">
+            <div id="menuToggle">
+                <input type="checkbox" />
+                <span></span>
+                <span></span>
+                <span></span>
+                <ul id="menu">
+                    <li>New Game: <a href="/new?gamesize=8">8  </a><a href="/new?gamesize=10">
+                        10  </a><a href="/new?gamesize=12">12  </a></li>
+                    <a href="/undo"><li>Undo</li></a>
+                    <a href="/redo"><li>Redo</li></a>
+                    <a href="/save"><li>Save</li></a>
+                    <a href="/load"><li>Load</li></a>
+                </ul>
+            </div>
+        </nav>
         <h1>Welcome to Checkers!</h1>
-        <table bgcolor="black" cellspacing="2" cellpadding="4">
-            <tr bgcolor="white">
-                <td>&nbsp;&nbsp;</td>
+
+        <table class="tableAlignment">
+            <tr>
+                <td class="outerTableNumeration">&nbsp;&nbsp;</td>
                 @for(size <- 0 until fieldMatrix.getSize) {
-                    <td><b>@size</b></td>
+                    <td class="outerTableNumeration"><b>@size</b></td>
                 }
             </tr>
-            @for((vector, idx) <- fieldMatrix.getRows.zipWithIndex) {
+            @for((vector, indexRow) <- fieldMatrix.getRows.zipWithIndex) {
                     <!--Rows-->
 
-                <tr bgcolor="white">
-                    <td ><b>@idx</b></td>
-                    @for(cells: Option[Cell] <- vector) {
+                <tr>
+                    <td class="outerTableNumeration"><b>@indexRow</b></td>
+                    @for((cells, indexColumn) <- vector.zipWithIndex) {
                             <!-- Cells in single rows-->
-                        <td>
-                            @if(cells.isDefined) {
-                                @cells.get.getValue
+                            <!--Set background color-->
+                        @if((indexRow % 2 == 0 && indexColumn % 2 == 1) ||
+                                (indexRow % 2 == 1 && indexColumn % 2 == 0)) {
+                            <td class="whiteTile tableCellSize">
+                        } else {
+                            <td class="blackTile tableCellSize">
                             }
-                            @if(cells.isEmpty) {
-                                    &nbsp;&nbsp;
+                        @if(cells.isDefined) {
+                            @defining(cells.get.getValue) { stoneValue =>
+                                @if(stoneValue == 1) {
+                                    <img src="@routes.Assets.versioned("images/white.jpg")" width="100%" height="100%" />
+                                }
+                                @if(stoneValue == 2) {
+                                    <img src="@routes.Assets.versioned("images/whiteKing.png")" width="100%" height="100%" />
+                                }
+                                @if(stoneValue == 3) {
+                                    <img src="@routes.Assets.versioned("images/black.jpg")" width="100%" height="100%" />
+                                }
+                                @if(stoneValue == 4) {
+                                    <img src="@routes.Assets.versioned("images/blackKing.png")" width="100%" height="100%" />
+                                }
                             }
-                        </td>
+                        }
+
+                    </td>
                     }
                 </tr>
             }
@@ -34,34 +69,37 @@
         <br>
         <span>@message</span>
         <br>
+        <br>
+
         <form action="/move">
-            <label for="jumps">Jumps:</label>
-            <input type="text" id="jumps" name="jumps">
+            <label for="jumps"></label>
+            <input type="text" id="jumps" name="jumps" class="inputtextfield" placeholder="Please enter your jumps">
 
-            <button type="reset">Eingaben zurücksetzen</button>
-            <button type="submit">Eingaben absenden</button>
+            <button class="btn" type="submit">Eingaben absenden</button>
         </form>
+            <!--
+    <form action="/new">
+        <label for="gamesize">New Game Size(8,10,12):</label>
+        <input type="text" id="gamesize" name="gamesize">
+        <button class="btn" type="reset">Eingaben zurücksetzen</button>
+        <button class="btn" type="submit">Eingaben absenden</button>
+    </form>
 
-        <form action="/new">
-            <label for="gamesize">New Game Size(8,10,12):</label>
-            <input type="text" id="gamesize" name="gamesize">
-            <button type="reset">Eingaben zurücksetzen</button>
-            <button type="submit">Eingaben absenden</button>
-        </form>
+    <form action="/undo">
+        <button class="btn" type="submit">UNDO</button>
+    </form>
 
-        <form action="/undo">
-            <button type="submit">UNDO</button>
-        </form>
+    <form action="/redo">
+        <button class="btn" type="submit">REDO</button>
+    </form>
 
-        <form action="/redo">
-            <button type="submit">REDO</button>
-        </form>
+    <form action="/load">
+        <button class="btn" type="submit">LOAD</button>
+    </form>
 
-        <form action="/load">
-            <button type="submit">LOAD</button>
-        </form>
-
-        <form action="/save">
-            <button type="submit">SAVE</button>
-        </form>
-    }
+    <form action="/save">
+        <button class="btn" type="submit">SAVE</button>
+    </form>
+    -->
+    </div>
+}
