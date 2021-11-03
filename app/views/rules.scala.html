@@ -37,24 +37,19 @@
 
         <div id="pictures">
             <h1>Standalone game:</h1>
-            <table>
-                <tr>
-                    <th>
+            <div class="row">
+                <div class="col">
+                    <div>
                         Text UI
-                    </th>
-                    <th>
-                        GUI
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="@routes.Assets.versioned("images/tui.jpg")" alt="TextUI in standalone application" height="300"/>
-                    </td>
-                    <td>
-                        <img src="@routes.Assets.versioned("images/gui.gif")" alt="GUI in standalone application" height="300"/>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                    <img src="@routes.Assets.versioned("images/tui.jpg")" alt="TextUI in standalone application" height="300"/>
+                </div>
+                <div class="col">
+                    <div>GUI</div>
+                    <img src="@routes.Assets.versioned("images/gui.gif")" alt="GUI in standalone application" height="300"/>
+                </div>
+                <div class="col"></div>
+            </div>
 
         </div>
     </div>
