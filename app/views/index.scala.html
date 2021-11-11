@@ -37,7 +37,7 @@
         <div class="row">
             <div class="col-2"></div>
             <div class="col-8">
-                <table class="tableAlignment">
+                <table id="gameTable" class="tableAlignment">
                     <tr>
                         <td class="outerTableNumeration">&nbsp;&nbsp;</td>
                         @for(size <- 0 until fieldMatrix.getSize) {
@@ -54,20 +54,20 @@
                                     <!--Set background color-->
                                 @if((indexRow % 2 == 0 && indexColumn % 2 == 1) ||
                                         (indexRow % 2 == 1 && indexColumn % 2 == 0)) {
-                                    <td class="whiteTile tableCellSize">
+                                    <td class="whiteTile tableCellSize border">
                                 } else {
-                                    <td class="blackTile tableCellSize">
+                                    <td class="blackTile tableCellSize border">
                                     }
                                 @if(cells.isDefined) {
                                     @defining(cells.get.getValue) { stoneValue =>
                                         @if(stoneValue == 1) {
-                                            <img src="@routes.Assets.versioned("images/white.jpg")" width="100%" height="100%" />
+                                            <img style="margin: 2px" src="@routes.Assets.versioned("images/white.jpg")" width="100%" height="100%" />
                                         }
                                         @if(stoneValue == 2) {
                                             <img src="@routes.Assets.versioned("images/whiteKing.png")" width="100%" height="100%" />
                                         }
                                         @if(stoneValue == 3) {
-                                            <img src="@routes.Assets.versioned("images/black.jpg")" width="100%" height="100%" />
+                                            <img style="margin: 2px" src="@routes.Assets.versioned("images/black.jpg")" width="100%" height="100%" />
                                         }
                                         @if(stoneValue == 4) {
                                             <img src="@routes.Assets.versioned("images/blackKing.png")" width="100%" height="100%" />
@@ -94,8 +94,8 @@
             <div class="col">
                 <form action="/move">
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Please enter your jumps" aria-label="Please enter your jumps" aria-describedby="button-send-jumps">
-                        <button id="button-send-jumps" type="button" class="btn btn-danger" type="submit">Senden</button>
+                        <input id="input-text-field-jumps" name="jumps" type="text" class="form-control" placeholder="Please enter your jumps" aria-label="Please enter your jumps" aria-describedby="button-send-jumps">
+                        <button id="button-send-jumps" class="btn btn-danger" type="submit">Senden</button>
                     </div>
                 </form>
             </div>

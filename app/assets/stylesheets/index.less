@@ -1,37 +1,45 @@
 @import "main";
 
 @cellSize: 7vh;
-
+/*
+td {
+  border: 2px solid transparent;
+}
+td:hover {
+  border: 2px solid #ed0d32;
+}
+*/
 //Contains gamefield and header
-#outerContainer{
+#outerContainer {
   text-align: center;
 }
 
 //Input text box
-.inputtextfield{
-  width:20%;
-  border:2px solid #aaa;
-  border-radius:4px;
-  margin:8px 0;
-  outline:none;
-  padding:8px;
-  box-sizing:border-box;
-  transition:.3s;
+.inputtextfield {
+  width: 20%;
+  border: 2px solid #aaa;
+  border-radius: 4px;
+  margin: 8px 0;
+  outline: none;
+  padding: 8px;
+  box-sizing: border-box;
+  transition: .3s;
 }
 
-.inputtextfield:focus{
-  border-color:@accent-color-red;
-  box-shadow:0 0 8px 0 @accent-color-red;
+.inputtextfield:focus {
+  border-color: @accent-color-red;
+  box-shadow: 0 0 8px 0 @accent-color-red;
 }
 
 
 //TABLE GAME FIELD
-.tableAlignment{
+.tableAlignment {
   margin-left: auto;
   margin-right: auto;
-  //float: right;
-  //margin-right: 20vh;
+  //table-layout: fixed;
+  border-collapse: separate !important;
 }
+
 .outerTableNumeration {
   background-color: @background-color;
   text-align: center;
@@ -50,6 +58,7 @@
   height: @cellSize;
   width: @cellSize;
 }
+
 /*
 .tableCellSize:hover {
   border-color: @secondary-accent-color;
@@ -59,8 +68,7 @@
 */
 
 //MENÜ
-#menuToggle
-{
+#menuToggle {
   display: block;
   position: fixed;
   margin-top: 40px;
@@ -72,22 +80,19 @@
   user-select: none;
 }
 
-#menuToggle a
-{
+#menuToggle a {
   text-decoration: none;
   color: @font-color;
 
   transition: color 0.3s ease;
 }
 
-#menuToggle a:hover
-{
+#menuToggle a:hover {
   color: @background-color;
 }
 
 
-#menuToggle input
-{
+#menuToggle input {
   display: block;
   width: 40px;
   height: 32px;
@@ -106,8 +111,7 @@
 /*
  * Just a quick hamburger
  */
-#menuToggle span
-{
+#menuToggle span {
   display: block;
   width: 33px;
   height: 4px;
@@ -121,18 +125,16 @@
 
   transform-origin: 4px 0px;
 
-  transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
-  background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
+  transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
+  background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0),
   opacity 0.55s ease;
 }
 
-#menuToggle span:first-child
-{
+#menuToggle span:first-child {
   transform-origin: 0% 0%;
 }
 
-#menuToggle span:nth-last-child(2)
-{
+#menuToggle span:nth-last-child(2) {
   transform-origin: 0% 100%;
 }
 
@@ -140,8 +142,7 @@
  * Transform all the slices of hamburger
  * into a crossmark.
  */
-#menuToggle input:checked ~ span
-{
+#menuToggle input:checked ~ span {
   opacity: 1;
   transform: rotate(45deg) translate(-2px, -1px);
   background: #232323;
@@ -150,8 +151,7 @@
 /*
  * But let's hide the middle one.
  */
-#menuToggle input:checked ~ span:nth-last-child(3)
-{
+#menuToggle input:checked ~ span:nth-last-child(3) {
   opacity: 0;
   transform: rotate(0deg) scale(0.2, 0.2);
 }
@@ -159,8 +159,7 @@
 /*
  * Ohyeah and the last one should go the other direction
  */
-#menuToggle input:checked ~ span:nth-last-child(2)
-{
+#menuToggle input:checked ~ span:nth-last-child(2) {
   transform: rotate(-45deg) translate(0, -1px);
 }
 
@@ -168,8 +167,7 @@
  * Make this absolute positioned
  * at the top left of the screen
  */
-#menu
-{
+#menu {
   text-align: left;
   position: absolute;
   width: 300px;
@@ -185,7 +183,7 @@
   transform-origin: 0% 0%;
   transform: translate(-100%, 0);
 
-  transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+  transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
 
   font-color: @font-color;
   background: @accent-color-red;
@@ -199,7 +197,6 @@
 /*
  * And let's slide it in from the left
  */
-#menuToggle input:checked ~ ul
-{
+#menuToggle input:checked ~ ul {
   transform: none;
 }
