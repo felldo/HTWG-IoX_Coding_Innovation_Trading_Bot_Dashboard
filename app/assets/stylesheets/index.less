@@ -1,17 +1,21 @@
 @import "main";
 
 @cellSize: 7vh;
-/*
-td {
-  border: 2px solid transparent;
-}
-td:hover {
-  border: 2px solid #ed0d32;
-}
-*/
+
 //Contains gamefield and header
 #outerContainer {
   text-align: center;
+}
+
+//TABLE CELL HOVER and CLICK
+.highlight-hover {
+    outline: solid 2px @secondary-accent-color;
+    outline-offset: -2px;
+}
+
+.highlight-click {
+    outline: solid 2px @accent-color-red;
+    outline-offset: -2px;
 }
 
 //Input text box
@@ -31,13 +35,14 @@ td:hover {
   box-shadow: 0 0 8px 0 @accent-color-red;
 }
 
-
 //TABLE GAME FIELD
 .tableAlignment {
   margin-left: auto;
   margin-right: auto;
   //table-layout: fixed;
+  //border-collapse: unset !important;
   border-collapse: separate !important;
+  border-spacing: 0px !important;
 }
 
 .outerTableNumeration {
@@ -58,14 +63,6 @@ td:hover {
   height: @cellSize;
   width: @cellSize;
 }
-
-/*
-.tableCellSize:hover {
-  border-color: @secondary-accent-color;
-  border-width: 2px 2px 2px 2px;
-  //border-collapse: collapse;
-}
-*/
 
 //MENÜ
 #menuToggle {
