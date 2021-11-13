@@ -9,3 +9,8 @@ tmp/
 .cache
 /.idea/
 /null/
+
+.bsp/sbt.json
+
+#Ignore MacOS created files
+*.DS_Store
