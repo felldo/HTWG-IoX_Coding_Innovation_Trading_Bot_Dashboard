@@ -4,6 +4,7 @@ import aview.{Tui, UI}
 import com.google.inject.{Guice, Injector}
 import controller.ControllerInterface
 import model.CheckersModule
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc._
 
 import javax.inject._
@@ -29,7 +30,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
 
   def move(jumps: String): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("move " + jumps, controller)
-    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
+    Ok(generateFullJSON(controller.getGameData(), message))
   }
 
   def newGame(gamesize: Int): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
@@ -59,5 +60,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
 
   def rules(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     Ok(views.html.rules())
+  }
+
+  def gameJson(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    Ok(controller.getGameData())
+  }
+
+  def generateFullJSON(json: String, message: String): String={
+    val playJson = Json.parse(json)
+    Json.prettyPrint(playJson.as[JsObject] + ("message" -> Json.toJson(message)))
   }
 }

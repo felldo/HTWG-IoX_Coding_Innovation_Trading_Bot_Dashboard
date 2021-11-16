@@ -59,19 +59,28 @@ $('td').click(function () {
 $(document).ready(async function() {
     const text = $("#textMessage").text();
 
-    if(text.includes("MOVE FROM") || text.includes("Created a new field")){
+    console.log(text)
+
+    showToast(text)
+
+    initiateWinningScreen();
+});
+
+function showToast(message){
+    if(message.includes("MOVE FROM") || message.includes("Created a new field")){
         iziToast.success({
             title: 'Success!',
-            message: text
+            message: message
         });
+    }else if(message === ""){
+
     } else {
         iziToast.error({
             title: 'OOPS!',
-            message: text
+            message: message
         });
     }
-    initiateWinningScreen();
-});
+}
 
 /////////////////////////////////
 /////////Winning Screen//////////
@@ -169,3 +178,60 @@ document.addEventListener('click', function(e) {
         document.activeElement.blur();
     }
 });
+
+///////////////////////////////////
+/////AJAX/////
+///////////////////////////////////
+$('form').on('submit', function (e) {
+    const form = $(this);
+    const action = form.attr('action');
+    e.preventDefault();
+
+    $.ajax({
+        url: action,
+        type: form.attr('method'),
+        data: form.serialize(),
+        success: function (data, status) {
+            console.log('SUCCESSFULLY SENT POST')
+
+            const jsonData = JSON.parse(data)
+
+            constructTable(jsonData)
+            console.log(data)
+            showToast(jsonData.message)
+        },
+        error: function (jqXHR, status, error) {
+            console.log('ERROR SENDING POST: ' + error)
+            showToast(jqXHR.responseText)
+        }
+    });
+});
+
+function constructTable(data){
+    $('#gameTable td > img').remove();
+    $('td').removeClass("highlight-click")
+
+    const rows = data.field.rows
+    const flatRows = []
+
+    rows.forEach(row => {
+        console.log(row)
+        row.forEach(cell => flatRows.push(cell))
+    })
+
+    const tableCells = $('td.tableCellSize')
+
+    for (let i = 0; i < flatRows.length; i++) {
+        const cellValue = flatRows[i]
+        const cellJQuery = tableCells[i]
+        if(cellValue === 1){
+            cellJQuery.append( '<img src="/assets/images/white.jpg" width="100%" height="100%">' );
+        }else if(cellValue === 2){
+            cellJQuery.append( '<img src="/assets/images/whiteKing.png" width="100%" height="100%">' );
+        }else if(cellValue === 3){
+            cellJQuery.append( '<img src="/assets/images/black.jgp" width="100%" height="100%">' );
+        }else if(cellValue === 4){
+            cellJQuery.append( '<img src="/assets/images/blackKing.png" width="100%" height="100%">' );
+        }
+    }
+}

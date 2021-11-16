@@ -94,9 +94,7 @@
 
             </table>
 
-            <div id="textMessage" class="alert text-center" hidden role="alert">
-                @message
-            </div>
+            <div id="textMessage" class="alert text-center" hidden role="alert">@message</div>
         </div>
 
         <div class="col-2"></div>
@@ -106,7 +104,7 @@
     <div class="row">
         <div class="col-4"></div>
         <div class="col-4">
-            <form action="/move">
+            <form action="/move" method="get">
                     <span class="input-group mb-12">
                         <input id="input-text-field-jumps" name="jumps" type="text" class="form-control"
                                placeholder="Please enter your jumps" aria-label="Please enter your jumps"
