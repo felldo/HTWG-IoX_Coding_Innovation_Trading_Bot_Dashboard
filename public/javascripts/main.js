@@ -1,32 +1,30 @@
 //show hover effect on gamefield
-$('#gameTable td').hover(function () {
-    // Coordinates of current cell
-    const col = $(this).index();
-    const row = $(this).closest('tr').index();
+function hover(){
+    $('#gameTable td').hover(function () {
+        // Coordinates of current cell
+        const col = $(this).index();
+        const row = $(this).closest('tr').index();
 
-    if(row != 0 && col != 0){
         $(this).addClass("highlight-hover");
-    }
-}, function () {
-    // Coordinates of current cell
-    const col = $(this).index();
-    const row = $(this).closest('tr').index();
+    }, function () {
+        // Coordinates of current cell
+        const col = $(this).index();
+        const row = $(this).closest('tr').index();
 
-    if(row != 0 && col != 0){
         $(this).removeClass("highlight-hover");
-    }
-});
+    });
+}
 
 //save user clicks from gamefield
 let jumps = []
-$('td').click(function () {
-    const row_index = $(this).parent().index();
-    const col_index = $(this).index();
+function clickableCells(){
+    $('td').click(function () {
+        const row_index = $(this).parent().index();
+        const col_index = $(this).index();
 
-    if (row_index != 0 && col_index != 0) {
         let position = {
-            x: col_index - 1,
-            y: row_index - 1
+            x: col_index,
+            y: row_index
         }
 
         if($(this).hasClass("highlight-click")){
@@ -52,12 +50,15 @@ $('td').click(function () {
             $("#input-text-field-jumps").val(jumpString);
             $(this).addClass("highlight-click");
         }
-    }
-});
+    });
+}
 
 //show alert
 $(document).ready(async function() {
     const text = $("#textMessage").text();
+
+    hover()
+    clickableCells()
 
     console.log(text)
 
@@ -68,9 +69,17 @@ $(document).ready(async function() {
 
 function showToast(message){
     if(message.includes("MOVE FROM") || message.includes("Created a new field")){
+        if(message.includes("MOVE FROM")){
+            message = "STONE MOVED"
+        }
         iziToast.success({
             title: 'Success!',
             message: message
+        });
+    }else if(message.includes("Undo") || message.includes("Redo") || message.includes("SAVED") || message.includes("LOADED")){
+        iziToast.info({
+            title: message,
+            message: ""
         });
     }else if(message === ""){
 
@@ -125,7 +134,7 @@ function showWinningScreen(text) {
             buttons: [
                 ['<button><b>Create</b></button>', function (instance, toast, button, e, inputs) {
                     $("#iziFormNewGame").submit();
-                    //instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                 }, false], // true to focus
             ]
     });
@@ -182,6 +191,21 @@ document.addEventListener('click', function(e) {
 ///////////////////////////////////
 /////AJAX/////
 ///////////////////////////////////
+$('a').click(function(event) {
+    const url = $(this).attr('href')
+
+    if(url.includes('new') || url.includes('load') ||url.includes('save') ||url.includes('undo') ||url.includes('redo')){
+        event.preventDefault();
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
+            success: function (data, status)  {
+                handleResponse(data)
+            }
+        });
+    }
+});
+
 $('form').on('submit', function (e) {
     const form = $(this);
     const action = form.attr('action');
@@ -192,13 +216,7 @@ $('form').on('submit', function (e) {
         type: form.attr('method'),
         data: form.serialize(),
         success: function (data, status) {
-            console.log('SUCCESSFULLY SENT POST')
-
-            const jsonData = JSON.parse(data)
-
-            constructTable(jsonData)
-            console.log(data)
-            showToast(jsonData.message)
+            handleResponse(data)
         },
         error: function (jqXHR, status, error) {
             console.log('ERROR SENDING POST: ' + error)
@@ -206,6 +224,20 @@ $('form').on('submit', function (e) {
         }
     });
 });
+
+function handleResponse(data){
+    console.log('SUCCESSFULLY SENT POST')
+
+    jumps = []
+
+    const jsonData = JSON.parse(data)
+
+    constructTable(jsonData)
+    console.log(data)
+    showToast(jsonData.message)
+
+    initiateWinningScreen();
+}
 
 function constructTable(data){
     $('#gameTable td > img').remove();
@@ -219,19 +251,41 @@ function constructTable(data){
         row.forEach(cell => flatRows.push(cell))
     })
 
+    buildTable(rows)
+
     const tableCells = $('td.tableCellSize')
 
     for (let i = 0; i < flatRows.length; i++) {
         const cellValue = flatRows[i]
         const cellJQuery = tableCells[i]
         if(cellValue === 1){
-            cellJQuery.append( '<img src="/assets/images/white.jpg" width="100%" height="100%">' );
+            $(cellJQuery).append( '<img src="/assets/images/white.jpg" width="100%" height="100%">' );
         }else if(cellValue === 2){
-            cellJQuery.append( '<img src="/assets/images/whiteKing.png" width="100%" height="100%">' );
+            $(cellJQuery).append( '<img src="/assets/images/whiteKing.png" width="100%" height="100%">' );
         }else if(cellValue === 3){
-            cellJQuery.append( '<img src="/assets/images/black.jgp" width="100%" height="100%">' );
+            $(cellJQuery).append( '<img src="/assets/images/black.jpg" width="100%" height="100%">' );
         }else if(cellValue === 4){
-            cellJQuery.append( '<img src="/assets/images/blackKing.png" width="100%" height="100%">' );
+            $(cellJQuery).append( '<img src="/assets/images/blackKing.png" width="100%" height="100%">' );
+        }
+    }
+
+    hover()
+    clickableCells()
+}
+
+function buildTable(rows){
+    $('#gameTable > tbody > tr').remove()
+
+    for (let indexRow = 0; indexRow < rows.length; indexRow++) {
+        const row = rows[indexRow]
+
+        $('#gameTable > tbody').append("<tr></tr>")
+        for (let indexColumn = 0; indexColumn < row.length; indexColumn++) {
+            if((indexRow % 2 == 0 && indexColumn % 2 == 1) || (indexRow % 2 == 1 && indexColumn % 2 == 0)){
+                $('#gameTable > tbody').find("tr:last").append('<td class="whiteTile tableCellSize border"></td>')
+            }else{
+                $('#gameTable > tbody').find("tr:last").append('<td class="blackTile tableCellSize border"></td>')
+            }
         }
     }
 }

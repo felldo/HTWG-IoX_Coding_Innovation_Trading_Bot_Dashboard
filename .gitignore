@@ -10,6 +10,8 @@ tmp/
 /.idea/
 /null/
 
+game.json
+
 .bsp/sbt.json
 
 #Ignore MacOS created files

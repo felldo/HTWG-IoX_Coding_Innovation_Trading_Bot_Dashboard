@@ -35,27 +35,27 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
 
   def newGame(gamesize: Int): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("new " + gamesize, controller)
-    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
+    Ok(generateFullJSON(controller.getGameData(), message))
   }
 
   def undo(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("undo", controller)
-    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
+    Ok(generateFullJSON(controller.getGameData(), message))
   }
 
   def redo(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("redo", controller)
-    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
+    Ok(generateFullJSON(controller.getGameData(), message))
   }
 
   def load(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("load", controller)
-    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
+    Ok(generateFullJSON(controller.getGameData(), message))
   }
 
   def save(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
     val message = process.processInputLine("save", controller)
-    Ok(views.html.index(controller.getGame.getField.getFieldMatrix, message))
+    Ok(generateFullJSON(controller.getGameData(), message))
   }
 
   def rules(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>

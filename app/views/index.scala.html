@@ -45,19 +45,20 @@
         <div class="col-8">
             <table id="gameTable" class="tableAlignment">
 
+                <!--
                 <tr>
                     <td class="outerTableNumeration">&nbsp;&nbsp;</td>
                     @for(size <- 0 until fieldMatrix.getSize) {
                     <td class="outerTableNumeration"><b>@size</b></td>
                     }
                 </tr>
-
+                -->
 
                 @for((vector, indexRow) <- fieldMatrix.getRows.zipWithIndex) {
                 <!--Rows-->
 
                 <tr>
-                    <td class="outerTableNumeration"><b>@indexRow</b></td>
+                    <!--<td class="outerTableNumeration"><b>@indexRow</b></td>-->
                     @for((cells, indexColumn) <- vector.zipWithIndex) {
                     <!-- Cells in single rows-->
                     <!--Set background color-->
