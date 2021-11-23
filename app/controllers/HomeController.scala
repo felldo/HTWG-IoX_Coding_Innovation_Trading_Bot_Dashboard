@@ -1,10 +1,14 @@
 package controllers
 
-import aview.{Tui, UI}
+import akka.actor.{ActorRef, ActorSystem}
+import akka.stream.Materializer
+import aview.UI
+import com.fasterxml.jackson.databind.JsonNode
 import com.google.inject.{Guice, Injector}
 import controller.ControllerInterface
 import model.CheckersModule
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.streams.ActorFlow
 import play.api.mvc._
 
 import javax.inject._
@@ -14,7 +18,7 @@ import javax.inject._
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
+class HomeController @Inject()(val controllerComponents: ControllerComponents) (implicit system: ActorSystem, mat: Materializer) extends BaseController {
 
   val injector: Injector = Guice.createInjector(new CheckersModule)
   val controller: ControllerInterface = injector.getInstance(classOf[ControllerInterface])
@@ -69,5 +73,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) e
   def generateFullJSON(json: String, message: String): String={
     val playJson = Json.parse(json)
     Json.prettyPrint(playJson.as[JsObject] + ("message" -> Json.toJson(message)))
+  }
+
+  var outs = Vector[ActorRef]()
+  def socket = WebSocket.accept[String, String] { request =>
+    ActorFlow.actorRef { out =>
+      println("Connect received")
+      outs = outs:+out;
+      CheckersWebSocketActorFactory.create(out, this)
+    }
   }
 }

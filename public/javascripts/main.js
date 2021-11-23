@@ -1,3 +1,5 @@
+var socket
+
 //show hover effect on gamefield
 function hover(){
     $('#gameTable td').hover(function () {
@@ -28,29 +30,37 @@ function clickableCells(){
         }
 
         if($(this).hasClass("highlight-click")){
-            const positionArray = jumps.at(-1);
-            if(position.x == positionArray.x && position.y == positionArray.y){
-                $(this).removeClass("highlight-click");
-                jumps.pop();
-                let jumpString = "";
-                jumps.forEach(jmp => {
-                    jumpString = jumpString + jmp.y + " " + jmp.x + " ";
-                });
-                $("#input-text-field-jumps").val(jumpString);
-            }
+            removeClickedCell(position,this)
+            socket.send(createSocketData("EVENT_CLICKED_CELL_REMOVE", position))
         } else {
-            jumps.push(position);
-            let jumpString = "";
-            jumps.forEach(jmp => {
-                jumpString = jumpString + jmp.y + " " + jmp.x + " ";
-            });
-
-            //console.log(jumpString)
-
-            $("#input-text-field-jumps").val(jumpString);
-            $(this).addClass("highlight-click");
+            addClickedCell(position,this)
+            socket.send(createSocketData("EVENT_CLICKED_CELL_ADD", position))
         }
     });
+}
+
+function removeClickedCell(position, cell){
+    const positionArray = jumps.at(-1);
+    if(position.x == positionArray.x && position.y == positionArray.y){
+        $(cell).removeClass("highlight-click");
+        jumps.pop();
+        let jumpString = "";
+        jumps.forEach(jmp => {
+            jumpString = jumpString + jmp.y + " " + jmp.x + " ";
+        });
+        $("#input-text-field-jumps").val(jumpString);
+    }
+}
+
+function addClickedCell(position, cell){
+    jumps.push(position);
+    let jumpString = "";
+    jumps.forEach(jmp => {
+        jumpString = jumpString + jmp.y + " " + jmp.x + " ";
+    });
+
+    $("#input-text-field-jumps").val(jumpString);
+    $(cell).addClass("highlight-click");
 }
 
 //show alert
@@ -64,7 +74,46 @@ $(document).ready(async function() {
 
     showToast(text)
 
-    initiateWinningScreen();
+    //SOCKET
+    socket = new WebSocket("ws://localhost:9000/websocket");
+    socket.onopen = function(){
+        iziToast.info({
+            title: 'Connection established!',
+            message: ""
+        });
+    }
+    socket.onmessage = function(message){
+     const data = JSON.parse(message.data)
+     const action = data.action
+     if(action && action.includes("EVENT_CLICKED_CELL_ADD")){
+        const trs = $("tr");
+        const tr = trs[data.data.y]
+        const tds = $(tr).find("td")
+        const td = tds[data.data.x]
+        addClickedCell(data.data, td)
+     } else if(action && action.includes("EVENT_CLICKED_CELL_REMOVE")){
+        const trs = $("tr");
+        const tr = trs[data.data.y]
+        const tds = $(tr).find("td")
+        const td = tds[data.data.x]
+        removeClickedCell(data.data, td)
+     } else {
+        handleResponse(message.data)
+     }
+
+    }
+    socket.onerror = function(){
+        iziToast.error({
+             title: 'Websocket connection error occured!',
+             message: ""
+         });
+    }
+    socket.onclose = function(){
+         iziToast.info({
+             title: 'Connection closed!',
+             message: ""
+         });
+    }
 });
 
 function showToast(message){
@@ -132,7 +181,7 @@ function showWinningScreen(text) {
                 }, true]
             ],
             buttons: [
-                ['<button><b>Create</b></button>', function (instance, toast, button, e, inputs) {
+                ['<button id="winner_screen_button"><b>Create</b></button>', function (instance, toast, button, e, inputs) {
                     $("#iziFormNewGame").submit();
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                 }, false], // true to focus
@@ -189,40 +238,51 @@ document.addEventListener('click', function(e) {
 });
 
 ///////////////////////////////////
-/////AJAX/////
+/////SOCKET/////
 ///////////////////////////////////
 $('a').click(function(event) {
     const url = $(this).attr('href')
 
     if(url.includes('new') || url.includes('load') ||url.includes('save') ||url.includes('undo') ||url.includes('redo')){
         event.preventDefault();
-        $.ajax({
-            url: $(this).attr('href'),
-            type: 'get',
-            success: function (data, status)  {
-                handleResponse(data)
-            }
-        });
+        const attr = $(this).attr('href');
+
+        var matches = url.match("\\/([A-z]+)(\\?.+=([0-9 ]+))?")
+
+        if(url.includes('new')){
+            socket.send(createSocketData(matches[1],matches[3]))
+        }else{
+            socket.send(createSocketData(matches[1],""))
+        }
     }
 });
 
+function createSocketData(actionValue, dataValue){
+    let socketData = {
+        action: actionValue,
+        data: dataValue
+    }
+    return JSON.stringify(socketData)
+}
+
 $('form').on('submit', function (e) {
     const form = $(this);
-    const action = form.attr('action');
     e.preventDefault();
 
-    $.ajax({
-        url: action,
-        type: form.attr('method'),
-        data: form.serialize(),
-        success: function (data, status) {
-            handleResponse(data)
-        },
-        error: function (jqXHR, status, error) {
-            console.log('ERROR SENDING POST: ' + error)
-            showToast(jqXHR.responseText)
-        }
+    let jumpString = "";
+    jumps.forEach(jmp => {
+        jumpString = jumpString + jmp.y + " " + jmp.x + " ";
     });
+
+    const string = form.attr('action') + "?" +"jumps="+ jumpString;
+
+    var matches = string.match("\\/([A-z]+).+=([0-9 ]+)")
+
+    let socketData = {
+        action: matches[1],
+        data: matches[2]
+    }
+    socket.send(JSON.stringify(socketData))
 });
 
 function handleResponse(data){
@@ -233,10 +293,22 @@ function handleResponse(data){
     const jsonData = JSON.parse(data)
 
     constructTable(jsonData)
-    console.log(data)
+
     showToast(jsonData.message)
 
+    resetAllToastsIfWinningScreen()
+
     initiateWinningScreen();
+}
+
+function resetAllToastsIfWinningScreen(){
+    if(document.getElementById("winner_screen_button")){
+        const allToasts = document.getElementsByClassName('iziToast');
+        for(let i = 0; i < document.getElementsByClassName('iziToast').length; i++){
+            const toast = allToasts[i];
+            iziToast.hide({}, toast);
+        }
+    }
 }
 
 function constructTable(data){
