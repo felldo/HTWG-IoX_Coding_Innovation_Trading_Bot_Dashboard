@@ -24,6 +24,8 @@ function clickableCells(){
         const row_index = $(this).parent().index();
         const col_index = $(this).index();
 
+        console.log("clickableCells: " + row_index + " "+ col_index)
+
         let position = {
             x: col_index,
             y: row_index
@@ -42,6 +44,9 @@ function clickableCells(){
 function removeClickedCell(position, cell){
     const positionArray = jumps.at(-1);
     if(position.x == positionArray.x && position.y == positionArray.y){
+
+        console.log("removeClickedCell")
+
         $(cell).removeClass("highlight-click");
         jumps.pop();
         let jumpString = "";
@@ -53,6 +58,9 @@ function removeClickedCell(position, cell){
 }
 
 function addClickedCell(position, cell){
+
+    console.log("addClickedCell")
+
     jumps.push(position);
     let jumpString = "";
     jumps.forEach(jmp => {
@@ -63,16 +71,25 @@ function addClickedCell(position, cell){
     $(cell).addClass("highlight-click");
 }
 
+function clearSelectedCells() {
+    jumps = []
+    $("td").each(function() {
+        if($(this).hasClass("highlight-click")){
+            $(this).removeClass("highlight-click");
+        }
+    });
+}
+
 //show alert
 $(document).ready(async function() {
     const text = $("#textMessage").text();
-
+    showToast(text)
     hover()
     clickableCells()
 
     console.log(text)
 
-    showToast(text)
+
 
     //SOCKET
     socket = new WebSocket("ws://localhost:9000/websocket");
@@ -86,17 +103,26 @@ $(document).ready(async function() {
      const data = JSON.parse(message.data)
      const action = data.action
      if(action && action.includes("EVENT_CLICKED_CELL_ADD")){
+        console.log("EVENT_CLICKED_CELL_ADD")
         const trs = $("tr");
         const tr = trs[data.data.y]
         const tds = $(tr).find("td")
         const td = tds[data.data.x]
         addClickedCell(data.data, td)
      } else if(action && action.includes("EVENT_CLICKED_CELL_REMOVE")){
+     console.log("EVENT_CLICKED_CELL_REMOVE")
         const trs = $("tr");
         const tr = trs[data.data.y]
         const tds = $(tr).find("td")
         const td = tds[data.data.x]
         removeClickedCell(data.data, td)
+     } else if(action && action.includes("EVENT_RESET_SELECTION")){
+     console.log("RESET!!!!!")
+        clearSelectedCells()
+        iziToast.info({
+            title: 'Selection reset',
+            message: ""
+        });
      } else {
         handleResponse(message.data)
      }
@@ -224,6 +250,8 @@ $('#button-reset-jumps').on("click", function () {
     jumps = [];
     $("#input-text-field-jumps").val("");
 
+    socket.send(createSocketData("EVENT_RESET_SELECTION", ""))
+
     iziToast.info({
         title: 'Selection reset',
         message: ""
@@ -268,21 +296,27 @@ function createSocketData(actionValue, dataValue){
 $('form').on('submit', function (e) {
     const form = $(this);
     e.preventDefault();
-
+    const action = form.attr('action')
+    console.log(action)
+    if(action === "/move"){
     let jumpString = "";
-    jumps.forEach(jmp => {
-        jumpString = jumpString + jmp.y + " " + jmp.x + " ";
-    });
+        jumps.forEach(jmp => {
+            jumpString = jumpString + jmp.y + " " + jmp.x + " ";
+        });
 
-    const string = form.attr('action') + "?" +"jumps="+ jumpString;
+        const string = form.attr('action') + "?" +"jumps="+ jumpString;
 
-    var matches = string.match("\\/([A-z]+).+=([0-9 ]+)")
+        var matches = string.match("\\/([A-z]+).+=([0-9 ]+)")
 
-    let socketData = {
-        action: matches[1],
-        data: matches[2]
+        let socketData = {
+            action: matches[1],
+            data: matches[2]
+        }
+        socket.send(JSON.stringify(socketData))
+    }else if("/new"){
+        socket.send(createSocketData("new", $("#iziToastCreateNewGame").val()))
     }
-    socket.send(JSON.stringify(socketData))
+
 });
 
 function handleResponse(data){
@@ -346,17 +380,18 @@ function constructTable(data){
 }
 
 function buildTable(rows){
-    $('#gameTable > tbody > tr').remove()
+    $('#gameTable > tr').remove()
 
     for (let indexRow = 0; indexRow < rows.length; indexRow++) {
         const row = rows[indexRow]
 
-        $('#gameTable > tbody').append("<tr></tr>")
+        $('#gameTable').append("<tr></tr>")
+
         for (let indexColumn = 0; indexColumn < row.length; indexColumn++) {
             if((indexRow % 2 == 0 && indexColumn % 2 == 1) || (indexRow % 2 == 1 && indexColumn % 2 == 0)){
-                $('#gameTable > tbody').find("tr:last").append('<td class="whiteTile tableCellSize border"></td>')
+                $('#gameTable').find("tr:last").append('<td class="whiteTile tableCellSize border"></td>')
             }else{
-                $('#gameTable > tbody').find("tr:last").append('<td class="blackTile tableCellSize border"></td>')
+                $('#gameTable').find("tr:last").append('<td class="blackTile tableCellSize border"></td>')
             }
         }
     }

@@ -44,6 +44,7 @@ class CheckersWebSocketActor(out: ActorRef, homeController: HomeController) exte
     }
 
     override def update(): Unit = {
+      println(homeController.generateFullJSON(homeController.controller.getGameData(), homeController.process.returnMessage.value))
       out ! (homeController.generateFullJSON(homeController.controller.getGameData(), homeController.process.returnMessage.value))
       println("UPDATE: " + homeController.process.returnMessage.value)
     }

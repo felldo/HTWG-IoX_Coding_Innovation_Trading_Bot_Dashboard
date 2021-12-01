@@ -42,58 +42,62 @@
 <div class="container">
     <div class="row">
         <div class="col-2"></div>
-        <div class="col-8">
-            <table id="gameTable" class="tableAlignment">
 
+
+        <div id="app-7">
+            <ol>
                 <!--
-                <tr>
-                    <td class="outerTableNumeration">&nbsp;&nbsp;</td>
-                    @for(size <- 0 until fieldMatrix.getSize) {
-                    <td class="outerTableNumeration"><b>@size</b></td>
-                    }
-                </tr>
+                  Now we provide each todo-item with the todo object
+                  it's representing, so that its content can be dynamic.
+                  We also need to provide each component with a "key",
+                  which will be explained later.
                 -->
+                <todo-item
+                        v-for="item in groceryList"
+                        v-bind:todo="item"
+                        v-bind:key="item.id"
+                ></todo-item>
+            </ol>
+        </div>
+
+
+        <div id="game-table-div" class="col-8">
+            <game-table></game-table>
+            <!--<table id="gameTable" class="tableAlignment">
 
                 @for((vector, indexRow) <- fieldMatrix.getRows.zipWithIndex) {
-                <!--Rows-->
 
                 <tr>
-                    <!--<td class="outerTableNumeration"><b>@indexRow</b></td>-->
                     @for((cells, indexColumn) <- vector.zipWithIndex) {
-                    <!-- Cells in single rows-->
-                    <!--Set background color-->
-                    @if((indexRow % 2 == 0 && indexColumn % 2 == 1) ||
-                    (indexRow % 2 == 1 && indexColumn % 2 == 0)) {
-                    <td class="whiteTile tableCellSize border">
+                        @if((indexRow % 2 == 0 && indexColumn % 2 == 1) || (indexRow % 2 == 1 && indexColumn % 2 == 0)) {
+                            <td class="whiteTile tableCellSize border">
                         } else {
-                    <td class="blackTile tableCellSize border">
-                        }
-                        @if(cells.isDefined) {
-                        @defining(cells.get.getValue) { stoneValue =>
-                        @if(stoneValue == 1) {
-                        <img src="@routes.Assets.versioned("images/white.jpg")" width="100%"
-                        height="100%" />
-                        }
-                        @if(stoneValue == 2) {
-                        <img src="@routes.Assets.versioned("images/whiteKing.png")" width="100%" height="100%" />
-                        }
-                        @if(stoneValue == 3) {
-                        <img src="@routes.Assets.versioned("images/black.jpg")" width="100%"
-                        height="100%" />
-                        }
-                        @if(stoneValue == 4) {
-                        <img src="@routes.Assets.versioned("images/blackKing.png")" width="100%" height="100%" />
-                        }
-                        }
+                            <td class="blackTile tableCellSize border">
                         }
 
-                    </td>
+                        @if(cells.isDefined) {
+                            @defining(cells.get.getValue) { stoneValue =>
+                                @if(stoneValue == 1) {
+                                    <img src="@routes.Assets.versioned("images/white.jpg")" width="100%" height="100%" />
+                                }
+                                @if(stoneValue == 2) {
+                                    <img src="@routes.Assets.versioned("images/whiteKing.png")" width="100%" height="100%" />
+                                }
+                                @if(stoneValue == 3) {
+                                    <img src="@routes.Assets.versioned("images/black.jpg")" width="100%" height="100%" />
+                                }
+                                @if(stoneValue == 4) {
+                                    <img src="@routes.Assets.versioned("images/blackKing.png")" width="100%" height="100%" />
+                                }
+                            }
+                        }
+                        </td>
                     }
                 </tr>
 
                 }
 
-            </table>
+            </table>-->
 
             <div id="textMessage" class="alert text-center" hidden role="alert">@message</div>
         </div>
