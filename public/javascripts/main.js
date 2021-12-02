@@ -2,6 +2,7 @@ var socket
 
 //show hover effect on gamefield
 function hover(){
+    $( "td" ).off("hover");
     $('#gameTable td').hover(function () {
         // Coordinates of current cell
         const col = $(this).index();
@@ -20,28 +21,32 @@ function hover(){
 //save user clicks from gamefield
 let jumps = []
 function clickableCells(){
+    $( "td" ).off("click");
     $('td').click(function () {
-        const row_index = $(this).parent().index();
-        const col_index = $(this).index();
+    const row_index = $(this).parent().index();
+              const col_index = $(this).index();
 
-        console.log("clickableCells: " + row_index + " "+ col_index)
+              console.log("clickableCells: " + row_index + " "+ col_index)
 
-        let position = {
-            x: col_index,
-            y: row_index
-        }
+              let position = {
+                  x: col_index,
+                  y: row_index
+              }
 
-        if($(this).hasClass("highlight-click")){
-            removeClickedCell(position,this)
-            socket.send(createSocketData("EVENT_CLICKED_CELL_REMOVE", position))
-        } else {
-            addClickedCell(position,this)
-            socket.send(createSocketData("EVENT_CLICKED_CELL_ADD", position))
-        }
+              if($(this).hasClass("highlight-click")){
+                  removeClickedCell(position,this)
+                  socket.send(createSocketData("EVENT_CLICKED_CELL_REMOVE", position))
+              } else {
+                  addClickedCell(position,this)
+                  socket.send(createSocketData("EVENT_CLICKED_CELL_ADD", position))
+              }
     });
 }
 
 function removeClickedCell(position, cell){
+
+    console.log("removeClickedCell ++++++++++")
+
     const positionArray = jumps.at(-1);
     if(position.x == positionArray.x && position.y == positionArray.y){
 
@@ -84,6 +89,7 @@ function clearSelectedCells() {
 $(document).ready(async function() {
     const text = $("#textMessage").text();
     showToast(text)
+
     hover()
     clickableCells()
 
@@ -319,20 +325,45 @@ $('form').on('submit', function (e) {
 
 });
 
-function handleResponse(data){
-    console.log('SUCCESSFULLY SENT POST')
 
+var numberOfRows = $("#gameTable > tr").length;
+console.log("außerhalb " + numberOfRows)
+$("#gameTable").bind("DOMSubtreeModified", function() {
+    console.log("function außerhalb " + numberOfRows)
+    if($("#gameTable > tr").length !== numberOfRows){
+
+        numberOfRows = $("#gameTable > tr").length;
+
+        console.log("innerhalb " + numberOfRows)
+
+        alert("row count changed..");
+    }
+});
+
+var fieldSize = 0
+function handleResponse(data){
     jumps = []
 
     const jsonData = JSON.parse(data)
 
-    constructTable(jsonData)
+    app.field.rows = jsonData.field.rows
 
-    showToast(jsonData.message)
+    Vue.nextTick(function () {
+        console.log("TD TICK: "+$("td").length)
+        console.log("tr TICK: " + $("#gameTable > tr").length)
 
-    resetAllToastsIfWinningScreen()
+        $('td').removeClass("highlight-click")
+        hover()
+        clickableCells()
 
-    initiateWinningScreen();
+        showToast(jsonData.message)
+
+        resetAllToastsIfWinningScreen()
+
+        initiateWinningScreen();
+    })
+
+
 }
 
 function resetAllToastsIfWinningScreen(){
@@ -345,6 +376,7 @@ function resetAllToastsIfWinningScreen(){
     }
 }
 
+/*
 function constructTable(data){
     $('#gameTable td > img').remove();
     $('td').removeClass("highlight-click")
@@ -396,3 +428,4 @@ function buildTable(rows){
         }
     }
 }
+*/
