@@ -45,39 +45,6 @@
 
         <div id="game-table-div" class="col-8">
             <game-table></game-table>
-            <!--<table id="gameTable" class="tableAlignment">
-
-                @for((vector, indexRow) <- fieldMatrix.getRows.zipWithIndex) {
-
-                <tr>
-                    @for((cells, indexColumn) <- vector.zipWithIndex) {
-                        @if((indexRow % 2 == 0 && indexColumn % 2 == 1) || (indexRow % 2 == 1 && indexColumn % 2 == 0)) {
-                            <td class="whiteTile tableCellSize border">
-                        } else {
-                            <td class="blackTile tableCellSize border">
-                        }
-
-                        @if(cells.isDefined) {
-                            @defining(cells.get.getValue) { stoneValue =>
-                                @if(stoneValue == 1) {
-                                    <img src="@routes.Assets.versioned("images/white.jpg")" width="100%" height="100%" />
-                                }
-                                @if(stoneValue == 2) {
-                                    <img src="@routes.Assets.versioned("images/whiteKing.png")" width="100%" height="100%" />
-                                }
-                                @if(stoneValue == 3) {
-                                    <img src="@routes.Assets.versioned("images/black.jpg")" width="100%" height="100%" />
-                                }
-                                @if(stoneValue == 4) {
-                                    <img src="@routes.Assets.versioned("images/blackKing.png")" width="100%" height="100%" />
-                                }
-                            }
-                        }
-                        </td>
-                    }
-                </tr>
-                }
-            </table>-->
 
             <div id="textMessage" class="alert text-center" hidden role="alert">@message</div>
         </div>
@@ -104,11 +71,11 @@
         </div>
         <div class="col-4"></div>
     </div>
-
+<!--
     <form id="iziFormNewGame" action="/new" hidden>
         <input id="iziToastCreateNewGame" name="gamesize" value="8" type="text" class="form-control" hidden>
     </form>
-
+-->
 </div>
 
 </div>

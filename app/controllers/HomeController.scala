@@ -67,6 +67,8 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents) (
   }
 
   def gameJson(): Action[AnyContent] = Action { implicit request: Request[AnyContent] =>
+    println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    println(controller.getGameData())
     Ok(controller.getGameData())
   }
 
