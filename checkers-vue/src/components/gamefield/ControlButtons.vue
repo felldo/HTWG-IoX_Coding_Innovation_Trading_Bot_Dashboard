@@ -5,7 +5,7 @@
       <v-btn elevation="2" class="ma-1 control-button" x-large type="submit">
         Jump
       </v-btn>
-      <v-btn elevation="2" class="ma-1 control-button" x-large type="clear">
+      <v-btn id="button-reset-jumps" elevation="2" class="ma-1 control-button" x-large type="reset">
         Reset
       </v-btn>
     </form>

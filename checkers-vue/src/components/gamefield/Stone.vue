@@ -3,6 +3,7 @@
   <img class="stone" v-else-if="cellValue === 2" src="@/assets/images/whiteKing.png">
   <img class="stone" v-else-if="cellValue === 3" src="@/assets/images/black.jpg">
   <img class="stone" v-else-if="cellValue === 4" src="@/assets/images/blackKing.png">
+  <img class="stone" v-else src="@/assets/images/transparent.png">
 </template>
 
 <script>

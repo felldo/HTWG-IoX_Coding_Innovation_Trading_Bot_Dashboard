@@ -6,7 +6,6 @@
       <br>
       <GameTable :field=field></GameTable>
       <ControlButtons/>
-
       <NewGameForm/>
     </v-main>
     <Footer/>
@@ -30,22 +29,15 @@ export default {
     NewGameForm,
     ControlButtons,
   },
-  methods: {
-    methodThatForcesUpdate() {
-      // ...
-      this.$forceUpdate();  // Notice we have to use a $ here
-      // ...
-    }
-  },
   data() {
     return {
       field: {
-        size: 0,
+        size: 8,
         fieldStatistic1: 0,
         fieldStatistic2: 0,
         fieldStatistic3: 0,
         fieldStatistic4: 0,
-        rows: [[]]
+        rows : [[]]
       }
     };
   },

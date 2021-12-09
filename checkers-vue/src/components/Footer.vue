@@ -6,7 +6,7 @@
           <h5 class="h1 text-white">Checkers.</h5>
           <p class="small text-muted">This project is for the university course "web application"</p>
           <p class="small text-muted mb-0">
-            For rules see: <a class="footerLink text-primary" href="http://localhost:9000/rules">
+            For rules see: <a class="footerLink text-primary" href="/rules">
             Rules</a></p>
         </div>
         <div class="col-lg-4 col-md-6">

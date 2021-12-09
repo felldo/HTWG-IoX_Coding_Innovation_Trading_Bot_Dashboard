@@ -24,23 +24,13 @@ export default {
 
 <style>
 .tableCellSize {
-  max-width: 8vh;
+  max-width: 8vh !important;
 }
 .whiteTile {
-  background-color: #a2a2a2;
+  background-color: #a2a2a2 !important;
 }
-
 
 .blackTile {
-  background-color: #3c3c3c;
-}
-.highlight-hover {
-  outline: solid 2px #f5a623;
-  outline-offset: -2px;
-}
-
-.highlight-click {
-  outline: solid 2px #ed0d32;
-  outline-offset: -2px;
+  background-color: #3c3c3c !important;
 }
 </style>
