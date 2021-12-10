@@ -7,6 +7,7 @@
       <GameTable :field=field></GameTable>
       <ControlButtons/>
       <NewGameForm/>
+      <div class="mb-15"/>
     </v-main>
     <Footer/>
   </v-app>
