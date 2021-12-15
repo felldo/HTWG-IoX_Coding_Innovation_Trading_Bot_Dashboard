@@ -11,6 +11,12 @@ module.exports = {
       filename: 'rules.html',
     },
   },
+  pwa:{
+    workboxPluginMode: "InjectManifest",
+    workboxOptions:{
+      swSrc:"./src/service-worker.js",
+    }
+  },
   transpileDependencies: [
     'vuetify'
   ]

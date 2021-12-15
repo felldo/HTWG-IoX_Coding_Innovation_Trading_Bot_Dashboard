@@ -4,6 +4,7 @@ import vuetify from '@/plugins/vuetify'
 import $ from 'jquery'
 import iziToast from 'izitoast'
 import confetti from 'canvas-confetti'
+import './registerServiceWorker'
 //import Vuetify from "./plugins/vuetify";
 //Vue.config.productionTip = false
 

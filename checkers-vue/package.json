@@ -2,9 +2,6 @@
   "name": "checkers-vue",
   "version": "0.1.0",
   "private": true,
-  "rules": {
-    "no-unused-vars": 1
-  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -14,6 +11,7 @@
     "canvas-confetti": "^1.4.0",
     "core-js": "^3.6.5",
     "jquery": "^3.6.0",
+    "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
     "vue-izitoast": "^1.2.1",
     "vuetify": "^2.4.0"
@@ -21,6 +19,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-pwa": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
@@ -49,5 +48,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "rules": {
+    "no-unused-vars": 1
+  }
 }
