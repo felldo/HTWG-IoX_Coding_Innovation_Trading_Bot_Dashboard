@@ -17,6 +17,7 @@ export default {
   },
   props: ['field']
 };
+
 </script>
 
 <style>
