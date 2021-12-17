@@ -9,23 +9,20 @@
       <NewGameForm/>
       <div class="mb-15"/>
     </v-main>
-    <Footer/>
   </v-app>
 </template>
 
 <script>
-import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import GameTable from "@/components/gamefield/GameTable";
 import NewGameForm from "@/components/NewGameForm";
 import ControlButtons from "@/components/gamefield/ControlButtons";
 
 export default {
-  name: 'App',
+  name: 'Game',
 
   components: {
     GameTable,
-    Footer,
     Header,
     NewGameForm,
     ControlButtons,

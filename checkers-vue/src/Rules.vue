@@ -76,19 +76,12 @@
         </v-container>
       </div>
     </v-main>
-    <Footer/>
   </v-app>
 </template>
 
 <script>
-import Footer from '@/components/Footer';
-
 export default {
   name: 'Rules',
-
-  components: {
-    Footer,
-  },
 };
 </script>
 

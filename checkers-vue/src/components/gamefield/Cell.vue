@@ -25,6 +25,7 @@ export default {
 <style>
 .tableCellSize {
   max-width: 8vh !important;
+  max-height: 8vh !important;
 }
 .whiteTile {
   background-color: #a2a2a2 !important;
