@@ -14,5 +14,7 @@ game.json
 
 .bsp/sbt.json
 
+Checkers-Play.iml
+
 #Ignore MacOS created files
 *.DS_Store
