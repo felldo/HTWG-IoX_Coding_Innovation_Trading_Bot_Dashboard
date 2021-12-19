@@ -9,13 +9,28 @@ import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
+const field = {
+    size: 0,
+    fieldStatistic1: 0,
+    fieldStatistic2: 0,
+    fieldStatistic3: 0,
+    fieldStatistic4: 0,
+    rows: [[]]
+}
+
 var app = new Vue({
     router,
     vuetify,
-    render: h => h(RouterComp),
+    data: {field},
+    render: h => h(RouterComp, {
+        props: {
+            field
+        }
+    })
 }).$mount('#app')
 console.log(app)
 
+const connectionUrl = "localhost";
 var socket
 
 //show hover effect on gamefield
@@ -116,7 +131,7 @@ $(document).ready(async function () {
         console.log(text)
 
         //SOCKET
-        socket = new WebSocket("ws://localhost:9000/websocket");
+        socket = new WebSocket("ws://" + connectionUrl + ":9000/websocket");
         socket.onopen = function () {
             iziToast.info({
                 title: 'Connection established!',
@@ -164,6 +179,7 @@ $(document).ready(async function () {
                 message: ""
             });
         }
+
         initialLoading();
     }
 });
@@ -171,7 +187,7 @@ $(document).ready(async function () {
 function initialLoading() {
     console.log("")
     $.ajax({
-        url: 'http://localhost:9000/gameJson',
+        url: "http://" + connectionUrl + ":9000/gameJson",
         type: 'get',
         success: function (data) {
             console.log(data)
@@ -370,13 +386,22 @@ function handleResponse(data) {
 
     const jsonData = JSON.parse(data)
 
-    constructTable(jsonData)
+    app.$data.field.rows = jsonData.field.rows
 
-    showToast(jsonData.message)
+    Vue.nextTick(function () {
+        console.log("TD TICK: " + $("td").length)
+        console.log("tr TICK: " + $("#gameTable > tr").length)
 
-    resetAllToastsIfWinningScreen()
+        $('td').removeClass("highlight-click")
+        hover()
+        clickableCells()
 
-    initiateWinningScreen();
+        showToast(jsonData.message)
+
+        resetAllToastsIfWinningScreen()
+
+        initiateWinningScreen();
+    })
 
 }
 
@@ -386,60 +411,6 @@ function resetAllToastsIfWinningScreen() {
         for (let i = 0; i < document.getElementsByClassName('iziToast').length; i++) {
             const toast = allToasts[i];
             iziToast.hide({}, toast);
-        }
-    }
-}
-
-function constructTable(data) {
-    $('#gameTable td > img').remove();
-    $('td').removeClass("highlight-click")
-
-    const rows = data.field.rows
-    const flatRows = []
-
-    rows.forEach(row => {
-        console.log(row)
-        row.forEach(cell => flatRows.push(cell))
-    })
-
-    buildTable(rows)
-
-    const tableCells = $('td.tableCellSize')
-
-    for (let i = 0; i < flatRows.length; i++) {
-        const cellValue = flatRows[i]
-        const cellJQuery = tableCells[i]
-        if (cellValue === 1) {
-            $(cellJQuery).append('<img class="stone" src="/images/white.jpg">');
-        } else if (cellValue === 2) {
-            $(cellJQuery).append('<img class="stone" src="/images/whiteKing.png">');
-        } else if (cellValue === 3) {
-            $(cellJQuery).append('<img class="stone" src="/images/black.jpg">');
-        } else if (cellValue === 4) {
-            $(cellJQuery).append('<img class="stone" src="/images/blackKing.png">');
-        } else {
-            $(cellJQuery).append('<img class="stone" src="/images/transparent.png">');
-        }
-    }
-
-    hover()
-    clickableCells()
-}
-
-function buildTable(rows) {
-    $('#gameTable > tr').remove()
-
-    for (let indexRow = 0; indexRow < rows.length; indexRow++) {
-        const row = rows[indexRow]
-
-        $('#gameTable').append("<tr></tr>")
-
-        for (let indexColumn = 0; indexColumn < row.length; indexColumn++) {
-            if ((indexRow % 2 == 0 && indexColumn % 2 == 1) || (indexRow % 2 == 1 && indexColumn % 2 == 0)) {
-                $('#gameTable').find("tr:last").append('<td class="whiteTile tableCellSize border"></td>')
-            } else {
-                $('#gameTable').find("tr:last").append('<td class="blackTile tableCellSize border"></td>')
-            }
         }
     }
 }

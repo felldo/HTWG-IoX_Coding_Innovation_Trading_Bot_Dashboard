@@ -4,7 +4,7 @@
     <v-main>
       <br>
       <br>
-      <GameTable :field=field></GameTable>
+      <GameTable :field="field"></GameTable>
       <ControlButtons/>
       <NewGameForm/>
       <div class="mb-15"/>
@@ -20,14 +20,18 @@ import ControlButtons from "@/components/gamefield/ControlButtons";
 
 export default {
   name: 'Game',
-
+  props: {
+    field: {
+      type: Object
+    }
+  },
   components: {
     GameTable,
     Header,
     NewGameForm,
     ControlButtons,
   },
-  data() {
+  /*data() {
     return {
       field: {
         size: 8,
@@ -38,8 +42,8 @@ export default {
         rows : [[]]
       }
     };
-  },
-  //props: ['field']
+  },*/
+
 };
 </script>
 <style>

@@ -27,3 +27,4 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.1.0
 //libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.12.5"
 //dependencyOverrides += "com.fasterxml.jackson.core" % "jackson-core" % "2.12.5"
 includeFilter in (Assets, LessKeys.less) := "rules.less" | "index.less" | "main.less"
+javaOptions ++= Seq("", "-Djdk.lang.Process.allowAmbiguousCommands=true")

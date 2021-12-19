@@ -1,6 +1,6 @@
 <template>
   <v-app class="v-app">
-      <router-view></router-view>
+      <router-view :field="field"></router-view>
     <Footer/>
   </v-app>
 </template>
@@ -9,7 +9,7 @@
 import Footer from '@/components/Footer';
 export default {
   name: 'Router',
-
+  props: ['field'],
   components: {
     Footer,
   },

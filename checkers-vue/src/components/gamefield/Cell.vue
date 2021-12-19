@@ -25,8 +25,9 @@ export default {
 <style>
 .tableCellSize {
   /*width: 8vh !important;*/
-  width: 70px;
-  height: 70px;
+  /*width: 70px;
+  height: 70px;*/
+  width: 8vh;
 }
 
 .whiteTile {
