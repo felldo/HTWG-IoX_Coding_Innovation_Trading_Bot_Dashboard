@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
 
 var socket
 
-//show hover effect on gamefield
+//show hover effect on Gamefield
 function hover() {
     $("td").off("hover");
     $('#gameTable td').hover(function () {
