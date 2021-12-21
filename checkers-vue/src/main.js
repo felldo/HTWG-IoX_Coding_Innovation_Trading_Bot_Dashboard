@@ -30,9 +30,11 @@ var app = new Vue({
 }).$mount('#app')
 console.log(app)
 
-let connectionUrl = "localhost";
+let httpGameJsonUrl = "http://localhost:9000/gameJson"
+let websocketUrl = "ws://localhost:9000/websocket"
 if (process.env.NODE_ENV === 'production') {
-    connectionUrl = "checkers.better-tickets.de"
+    httpGameJsonUrl = "https://play.checkers.better-tickets.de/gameJson"
+    websocketUrl = "wss://play.checkers.better-tickets.de/websocket"
 }
 
 var socket
@@ -135,7 +137,7 @@ $(document).ready(async function () {
         console.log(text)
 
         //SOCKET
-        socket = new WebSocket("ws://" + connectionUrl + ":9000/websocket");
+        socket = new WebSocket(websocketUrl);
         socket.onopen = function () {
             iziToast.info({
                 title: 'Connection established!',
@@ -191,7 +193,7 @@ $(document).ready(async function () {
 function initialLoading() {
     console.log("")
     $.ajax({
-        url: "http://" + connectionUrl + ":9000/gameJson",
+        url: httpGameJsonUrl,
         type: 'get',
         success: function (data) {
             console.log(data)
