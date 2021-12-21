@@ -30,7 +30,11 @@ var app = new Vue({
 }).$mount('#app')
 console.log(app)
 
-const connectionUrl = "localhost";
+let connectionUrl = "localhost";
+if (process.env.NODE_ENV === 'production') {
+    connectionUrl = "checkers.better-tickets.de"
+}
+
 var socket
 
 //show hover effect on gamefield
