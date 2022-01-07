@@ -9,6 +9,25 @@ import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
+// Import the functions you need from the SDKs you need
+import {initializeApp} from "firebase/app";
+
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+    apiKey: "AIzaSyDu3frBO-O3sOPafPTYlOZrniMGDqY7E0M",
+    authDomain: "checkers-32b60.firebaseapp.com",
+    projectId: "checkers-32b60",
+    storageBucket: "checkers-32b60.appspot.com",
+    messagingSenderId: "549911678681",
+    appId: "1:549911678681:web:c2293a3f1a3238a5e538c8",
+    measurementId: "G-VFQDHCCX6G"
+};
+
+// Initialize Firebase
+initializeApp(firebaseConfig);
+
 const field = {
     size: 0,
     fieldStatistic1: 0,
@@ -28,7 +47,9 @@ var app = new Vue({
         }
     })
 }).$mount('#app')
+
 console.log(app)
+
 
 let httpGameJsonUrl = "http://localhost:9000/gameJson"
 let websocketUrl = "ws://localhost:9000/websocket"
@@ -43,16 +64,8 @@ var socket
 function hover() {
     $("td").off("hover");
     $('#gameTable td').hover(function () {
-        // Coordinates of current cell
-        //const col = $(this).index();
-        //const row = $(this).closest('tr').index();
-
         $(this).addClass("highlight-hover");
     }, function () {
-        // Coordinates of current cell
-        //const col = $(this).index();
-        //const row = $(this).closest('tr').index();
-
         $(this).removeClass("highlight-hover");
     });
 }
@@ -84,9 +97,7 @@ function clickableCells() {
 }
 
 function removeClickedCell(position, cell) {
-
     console.log("removeClickedCell ++++++++++")
-
     const positionArray = jumps.at(-1);
     if (position.x == positionArray.x && position.y == positionArray.y) {
 
@@ -103,9 +114,7 @@ function removeClickedCell(position, cell) {
 }
 
 function addClickedCell(position, cell) {
-
     console.log("addClickedCell")
-
     jumps.push(position);
     let jumpString = "";
     jumps.forEach(jmp => {
@@ -125,9 +134,8 @@ function clearSelectedCells() {
     });
 }
 
-//show alert
-$(document).ready(async function () {
-    if (window.location.pathname === "/") {
+const readyFunction = {
+    documentReady() {
         const text = $("#textMessage").text();
         showToast(text)
 
@@ -187,11 +195,88 @@ $(document).ready(async function () {
         }
 
         initialLoading();
+        Vue.nextTick(function () {
+            $('form').on('submit', function (e) {
+                console.log("PREVENT DEFAULT")
+                const form = $(this);
+                e.preventDefault();
+                const action = form.attr('action')
+                console.log(action)
+                if (action === "/move") {
+                    let jumpString = "";
+                    jumps.forEach(jmp => {
+                        jumpString = jumpString + jmp.y + " " + jmp.x + " ";
+                    });
+
+                    const string = form.attr('action') + "?" + "jumps=" + jumpString;
+
+                    var matches = string.match("\\/([A-z]+).+=([0-9 ]+)")
+
+                    let socketData = {
+                        action: matches[1],
+                        data: matches[2]
+                    }
+                    socket.send(JSON.stringify(socketData))
+                } else if (action === "/new") {
+                    socket.send(createSocketData("new", $("#iziToastCreateNewGame").val()))
+                }
+
+            });
+
+
+            ///////////////////////////////////
+/////Game reset button actions/////
+///////////////////////////////////
+            $('#button-reset-jumps').on("click", function () {
+                $("td").each(function () {
+                    if ($(this).hasClass("highlight-click")) {
+                        $(this).removeClass("highlight-click");
+                    }
+                });
+
+                //reset vars
+                jumps = [];
+                $("#input-text-field-jumps").val("");
+
+                socket.send(createSocketData("EVENT_RESET_SELECTION", ""))
+
+                iziToast.info({
+                    title: 'Selection reset',
+                    message: ""
+                });
+            });
+
+            $('a').on("click", function (event) {
+                console.log("EXECUTE A")
+                const url = $(this).attr('href')
+
+                if (url.includes('new') || url.includes('load') || url.includes('save') || url.includes('undo') || url.includes('redo')) {
+                    console.log("PREVENT DEFAULT A")
+                    event.preventDefault();
+                    //const attr = $(this).attr('href');
+
+                    var matches = url.match("\\/([A-z]+)(\\?.+=([0-9 ]+))?")
+
+                    if (url.includes('new')) {
+                        socket.send(createSocketData(matches[1], matches[3]))
+                    } else {
+                        socket.send(createSocketData(matches[1], ""))
+                    }
+                }
+            });
+
+
+            //Remove focus after button click
+            document.addEventListener('click', function () {
+                if (document.activeElement.toString() == '[object HTMLButtonElement]') {
+                    document.activeElement.blur();
+                }
+            });
+        });
     }
-});
+}
 
 function initialLoading() {
-    console.log("")
     $.ajax({
         url: httpGameJsonUrl,
         type: 'get',
@@ -200,7 +285,7 @@ function initialLoading() {
             const jsonData = JSON.parse(data)
             jsonData.message = "Initially loaded"
             handleResponse(JSON.stringify(jsonData))
-            console.log("LAODED")
+            console.log("LOADED")
         }
     });
 }
@@ -303,56 +388,6 @@ function showWinningScreen(text) {
     }, 250);
 }
 
-///////////////////////////////////
-/////Game reset button actions/////
-///////////////////////////////////
-$('#button-reset-jumps').on("click", function () {
-    $("td").each(function () {
-        if ($(this).hasClass("highlight-click")) {
-            $(this).removeClass("highlight-click");
-        }
-    });
-
-    //reset vars
-    jumps = [];
-    $("#input-text-field-jumps").val("");
-
-    socket.send(createSocketData("EVENT_RESET_SELECTION", ""))
-
-    iziToast.info({
-        title: 'Selection reset',
-        message: ""
-    });
-});
-
-//Remove focus after button click
-document.addEventListener('click', function () {
-    if (document.activeElement.toString() == '[object HTMLButtonElement]') {
-        document.activeElement.blur();
-    }
-});
-
-///////////////////////////////////
-/////SOCKET/////
-///////////////////////////////////
-$('a').click(function (event) {
-    const url = $(this).attr('href')
-
-    if (url.includes('new') || url.includes('load') || url.includes('save') || url.includes('undo') || url.includes('redo')) {
-        event.preventDefault();
-        //const attr = $(this).attr('href');
-
-        var matches = url.match("\\/([A-z]+)(\\?.+=([0-9 ]+))?")
-
-        if (url.includes('new')) {
-            socket.send(createSocketData(matches[1], matches[3]))
-        } else {
-            socket.send(createSocketData(matches[1], ""))
-        }
-    }
-    //populate
-});
-
 function createSocketData(actionValue, dataValue) {
     let socketData = {
         action: actionValue,
@@ -360,32 +395,6 @@ function createSocketData(actionValue, dataValue) {
     }
     return JSON.stringify(socketData)
 }
-
-$('form').on('submit', function (e) {
-    const form = $(this);
-    e.preventDefault();
-    const action = form.attr('action')
-    console.log(action)
-    if (action === "/move") {
-        let jumpString = "";
-        jumps.forEach(jmp => {
-            jumpString = jumpString + jmp.y + " " + jmp.x + " ";
-        });
-
-        const string = form.attr('action') + "?" + "jumps=" + jumpString;
-
-        var matches = string.match("\\/([A-z]+).+=([0-9 ]+)")
-
-        let socketData = {
-            action: matches[1],
-            data: matches[2]
-        }
-        socket.send(JSON.stringify(socketData))
-    } else if (action === "/new") {
-        socket.send(createSocketData("new", $("#iziToastCreateNewGame").val()))
-    }
-
-});
 
 function handleResponse(data) {
     jumps = []
@@ -408,7 +417,6 @@ function handleResponse(data) {
 
         initiateWinningScreen();
     })
-
 }
 
 function resetAllToastsIfWinningScreen() {
@@ -420,3 +428,5 @@ function resetAllToastsIfWinningScreen() {
         }
     }
 }
+
+export default readyFunction;

@@ -30,20 +30,7 @@ export default {
     Header,
     NewGameForm,
     ControlButtons,
-  },
-  /*data() {
-    return {
-      field: {
-        size: 8,
-        fieldStatistic1: 0,
-        fieldStatistic2: 0,
-        fieldStatistic3: 0,
-        fieldStatistic4: 0,
-        rows : [[]]
-      }
-    };
-  },*/
-
+  }
 };
 </script>
 <style>
