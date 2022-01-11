@@ -11,7 +11,6 @@ RUN npm install -g serve
 ADD . /sources
 WORKDIR /sources
 RUN sbt compile
-RUN ls
 RUN sbt dist
 # VueJS
 WORKDIR /sources/checkers-vue
@@ -20,14 +19,8 @@ RUN npm run build
 
 
 WORKDIR /sources/target/universal
-RUN ls
 RUN unzip -o play-server-1.0-SNAPSHOT.zip
-RUN ls
 RUN chmod +x /sources/target/universal/play-server-1.0-SNAPSHOT/bin/play-server
-
-#FUNKLTIONIERT
-#WORKDIR /sources/target/universal/play-server-1.0-SNAPSHOT/bin
-#ENTRYPOINT ["bash","play-server","-Dplay.http.secret.key=m:_GkW1ufC>81T=mO[tXVgP?8Z]y5NeqfUX/J?MF2R=@Tt0ZUfD0;lgDDNuM=/S>"]
 
 WORKDIR /sources
 ENTRYPOINT ["bash","docker-services-startup.sh"]
