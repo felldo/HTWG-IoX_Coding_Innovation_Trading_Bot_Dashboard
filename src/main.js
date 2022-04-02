@@ -2,10 +2,9 @@ import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
 import RouterComp from '@/Router.vue'
 import router from './router'
-import $ from 'jquery'
-import iziToast from 'izitoast'
-import confetti from 'canvas-confetti'
-import './registerServiceWorker'
+//import $ from 'jquery'
+//import iziToast from 'izitoast'
+//import confetti from 'canvas-confetti'
 
 Vue.config.productionTip = false
 
@@ -28,29 +27,62 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-const field = {
-    size: 0,
-    fieldStatistic1: 0,
-    fieldStatistic2: 0,
-    fieldStatistic3: 0,
-    fieldStatistic4: 0,
-    rows: [[]]
+const coins = {
+    coins : [
+        {
+            "name": "01coin",
+            "symbol": "ETHBTC",
+            "price": "0.07403300"
+        },
+        {
+            "name": "02coin",
+            "symbol": "LTCBTC",
+            "price": "0.00271800"
+        }
+    ]
 }
 
 var app = new Vue({
     router,
     vuetify,
-    data: {field},
+    data: {coins},
     render: h => h(RouterComp, {
         props: {
-            field
+            coins
         }
     })
 }).$mount('#app')
 
+
 console.log(app)
 
 
+
+/*
+setTimeout(() => {
+    //app.$data.field.rows = jsonData.field.rows
+    console.log("CHANGED")
+    coins.coins = [{
+        "name": "99999",
+        "symbol": "99999",
+        "price": "0.999999"
+    },
+        {
+            "name": "22222",
+            "symbol": "22222",
+            "price": "0.22222"
+        }]
+    }, 5000);
+
+*/
+
+
+
+
+
+
+
+/*
 let httpGameJsonUrl = "http://localhost:9000/gameJson"
 let websocketUrl = "ws://localhost:9000/websocket"
 if (process.env.NODE_ENV === 'production') {
@@ -428,5 +460,5 @@ function resetAllToastsIfWinningScreen() {
         }
     }
 }
-
-export default readyFunction;
+*/
+//export default readyFunction;
