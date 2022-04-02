@@ -15,72 +15,59 @@ import {initializeApp} from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyDu3frBO-O3sOPafPTYlOZrniMGDqY7E0M",
-    authDomain: "checkers-32b60.firebaseapp.com",
-    projectId: "checkers-32b60",
-    storageBucket: "checkers-32b60.appspot.com",
-    messagingSenderId: "549911678681",
-    appId: "1:549911678681:web:c2293a3f1a3238a5e538c8",
-    measurementId: "G-VFQDHCCX6G"
+apiKey: "AIzaSyDu3frBO-O3sOPafPTYlOZrniMGDqY7E0M",
+authDomain: "checkers-32b60.firebaseapp.com",
+projectId: "checkers-32b60",
+storageBucket: "checkers-32b60.appspot.com",
+messagingSenderId: "549911678681",
+appId: "1:549911678681:web:c2293a3f1a3238a5e538c8",
+measurementId: "G-VFQDHCCX6G"
 };
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
 const coins = {
-    coins : [
-        {
-            "name": "01coin",
-            "symbol": "ETHBTC",
-            "price": "0.07403300"
-        },
-        {
-            "name": "02coin",
-            "symbol": "LTCBTC",
-            "price": "0.00271800"
-        }
-    ]
+coins : [
+    {
+        "name": "01coin",
+        "symbol": "ETHBTC",
+        "price": "0.07403300"
+    },
+    {
+        "name": "02coin",
+        "symbol": "LTCBTC",
+        "price": "0.00271800"
+    }
+]
 }
 
 var app = new Vue({
-    router,
-    vuetify,
-    data: {coins},
-    render: h => h(RouterComp, {
-        props: {
-            coins
-        }
-    })
+router,
+vuetify,
+data: {coins},
+render: h => h(RouterComp, {
+    props: {
+        coins
+    }
+})
 }).$mount('#app')
-
 
 console.log(app)
 
-
-
-/*
-setTimeout(() => {
-    //app.$data.field.rows = jsonData.field.rows
-    console.log("CHANGED")
-    coins.coins = [{
-        "name": "99999",
-        "symbol": "99999",
-        "price": "0.999999"
-    },
-        {
-            "name": "22222",
-            "symbol": "22222",
-            "price": "0.22222"
-        }]
-    }, 5000);
-
-*/
-
-
-
-
-
-
+//app.$data.field.rows = jsonData.field.rows
+/*console.log("CHANGED")
+coins.coins = [{
+    "name": "99999",
+    "symbol": "99999",
+    "price": "0.999999"
+},
+    {
+        "name": "22222",
+        "symbol": "22222",
+        "price": "0.22222"
+    }]*/
+//}, 5000);
 
 /*
 let httpGameJsonUrl = "http://localhost:9000/gameJson"

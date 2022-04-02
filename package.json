@@ -1,5 +1,5 @@
 {
-  "name": "Tradin Bot",
+  "name": "tradingbot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,8 +11,11 @@
     "canvas-confetti": "^1.4.0",
     "core-js": "^3.6.5",
     "firebase": "^9.6.1",
+    "highcharts": "^10.0.0",
+    "highcharts-vue": "^1.4.0",
     "jquery": "^3.6.0",
     "register-service-worker": "^1.7.1",
+    "trading-vue-js": "^1.0.2",
     "vue": "^2.6.11",
     "vue-izitoast": "^1.2.1",
     "vue-router": "^3.5.3",
