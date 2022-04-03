@@ -26,7 +26,7 @@
           </v-list-item-content>
         </template>
       </v-autocomplete>
-      <CandleStickChart :coins="coins"></CandleStickChart>
+      <CandleStickChart :coins="coins" :selected="selected"></CandleStickChart>
     </v-main>
   </v-app>
 </template>
@@ -34,7 +34,7 @@
 <script>
 import Header from '@/components/Header'
 import CandleStickChart from "@/components/CandleStickChart";
-import $ from 'jquery'
+//import $ from 'jquery'
 
 
 export default {
@@ -62,7 +62,7 @@ export default {
   methods: {
     fetchNewKline(coinName) {
       console.log("FETCH KLINE: " + coinName);
-      $.ajax({
+      /*$.ajax({
         url: "http://localhost:8000/dashboard/kline/",
         type: 'get',
         data: {
@@ -10165,7 +10165,7 @@ export default {
       })
 
       //this.$forceUpdate();
-      //this.$emit('update-cart', 5)
+      //this.$emit('update-cart', 5)*/
     },
   }
 };
