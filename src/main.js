@@ -33,7 +33,7 @@ const coins = {
 }
 
 $.ajax({
-    url: "http://localhost:8000/binance/tickers/",
+    url: "http://localhost:8000/dashboard/tickers/",
     type: 'get',
     success: function (data) {
         console.log(data)

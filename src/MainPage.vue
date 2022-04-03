@@ -63,7 +63,7 @@ export default {
     fetchNewKline(coinName) {
       console.log("FETCH KLINE: " + coinName);
       $.ajax({
-        url: "http://localhost:8000/binance/kline/",
+        url: "http://localhost:8000/dashboard/kline/",
         type: 'get',
         data: {
           "name": coinName
