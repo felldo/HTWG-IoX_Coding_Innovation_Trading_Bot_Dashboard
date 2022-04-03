@@ -3,8 +3,8 @@
   "name": "IoX Coding Innovation Trading Bot",
   "icons": [
     {
-      "src": "/images/coins-icon.png",
-      "type": "image/png",
+      "src": "./favicon.ico",
+      "type": "image/ico",
       "sizes": "512x512"
     }
   ],

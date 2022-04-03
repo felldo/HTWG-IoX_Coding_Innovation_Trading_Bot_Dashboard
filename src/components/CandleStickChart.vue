@@ -1,21 +1,39 @@
 <template>
   <div>
     <trading-vue class="trading-vue"
-                 :data="lol"
+                 ref="tvjs"
+                 :data="dc"
                  :width="this.width"
+                 :height="this.height"
                  :titleTxt="this.titleText"
                  :toolbar="true"
+                 :extensions="this.ext"
+                 :legend-buttons="[
+                'display',
+                'settings',
+                'up',
+                'down',
+                'add',
+                'remove',
+            ]"
+                 :chart-config="{
+                TB_B_STYLE: 'line',
+                TB_BORDER: 1,
+                TB_ICON_BRI: 1.5,
+                DEFAULT_LEN: 100,
+            }"
                  :overlays="overlays"
-    ></trading-vue>
+
+    />
   </div>
 
 </template>
 
 
 <script>
-import TradingVue from 'trading-vue-js'
+import {TradingVue, DataCube} from 'trading-vue-js'
 import Overlays from 'tvjs-overlays'
-
+import XP from 'tvjs-xp'
 //https://github.com/tvjsx/trading-vue-js
 //https://github.com/tvjsx/trading-vue-js/tree/master/docs/api#api-book
 
@@ -10112,15 +10130,15 @@ const klineData = [
 const histogram = []
 klineData.forEach(value => histogram.push([value[0], value[2] * .95, value[3]]))
 
-
 export default {
   name: 'app',
   components: {TradingVue},
   data() {
     return {
       //overlays: [Overlays['Markers']],
+      ext: Object.values(XP),
       overlays: Object.values(Overlays),
-      lol: {
+      dc: new DataCube({
         "chart": {
           "type": "Candles",
           "data": klineData
@@ -10170,8 +10188,9 @@ export default {
             "data": histogram
           }
         ]
-      },
+      }),
       width: window.innerWidth,
+      height: window.innerHeight*0.75,
       titleText: "Trading Bot",
       colors: {
         colorBack: '#fff',
@@ -10179,6 +10198,11 @@ export default {
         colorText: '#333',
       }
     }
+  },
+  mounted() {
+    window.tv = this.$refs.tvjs;
+    window.test = this;
+    //this.ext = Object.values(XP)
   },
   methods: {
     changeWidth() {
