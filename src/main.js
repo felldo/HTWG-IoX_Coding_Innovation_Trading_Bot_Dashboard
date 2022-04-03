@@ -2,55 +2,59 @@ import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
 import RouterComp from '@/Router.vue'
 import router from './router'
-//import $ from 'jquery'
+import $ from 'jquery'
+// Import the functions you need from the SDKs you need
+import {initializeApp} from "firebase/app";
 //import iziToast from 'izitoast'
 //import confetti from 'canvas-confetti'
 
 Vue.config.productionTip = false
 
-// Import the functions you need from the SDKs you need
-import {initializeApp} from "firebase/app";
-
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-apiKey: "AIzaSyDu3frBO-O3sOPafPTYlOZrniMGDqY7E0M",
-authDomain: "checkers-32b60.firebaseapp.com",
-projectId: "checkers-32b60",
-storageBucket: "checkers-32b60.appspot.com",
-messagingSenderId: "549911678681",
-appId: "1:549911678681:web:c2293a3f1a3238a5e538c8",
-measurementId: "G-VFQDHCCX6G"
+    apiKey: "AIzaSyDu3frBO-O3sOPafPTYlOZrniMGDqY7E0M",
+    authDomain: "checkers-32b60.firebaseapp.com",
+    projectId: "checkers-32b60",
+    storageBucket: "checkers-32b60.appspot.com",
+    messagingSenderId: "549911678681",
+    appId: "1:549911678681:web:c2293a3f1a3238a5e538c8",
+    measurementId: "G-VFQDHCCX6G"
 };
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
+
 const coins = {
-coins : [
-    {
-        "name": "01coin",
-        "symbol": "ETHBTC",
-        "price": "0.07403300"
-    },
-    {
-        "name": "02coin",
-        "symbol": "LTCBTC",
-        "price": "0.00271800"
-    }
-]
+    coins: [],
+    kline: [[]]
 }
 
-var app = new Vue({
-router,
-vuetify,
-data: {coins},
-render: h => h(RouterComp, {
-    props: {
-        coins
+$.ajax({
+    url: "http://localhost:8000/binance/tickers/",
+    type: 'get',
+    success: function (data) {
+        console.log(data)
+        coins.coins = data
+        //data.forEach(x => console.log(x))
+        //const jsonData = JSON.parse(data)
+        //console.log(jsonData)
+        console.log("FETCHED COINS")
     }
-})
+});
+
+
+var app = new Vue({
+    router,
+    vuetify,
+    data: {coins},
+    render: h => h(RouterComp, {
+        props: {
+            coins
+        }
+    })
 }).$mount('#app')
 
 console.log(app)

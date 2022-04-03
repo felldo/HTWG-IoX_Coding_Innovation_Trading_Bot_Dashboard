@@ -42,7 +42,7 @@ import XP from 'tvjs-xp'
 //https://github.com/tvjsx/tvjs-overlays/tree/master/src/overlays/DHistogram
 //https://github.com/tvjsx/tvjs-overlays/blob/master/src/overlays/Markers/data.json
 //https://github.com/tvjsx/tvjs-overlays/tree/master/src/overlays/TradesPlus
-
+/*
 const klineData = [
   [
     1646316000000,
@@ -10130,9 +10130,12 @@ const klineData = [
 const histogram = []
 klineData.forEach(value => histogram.push([value[0], value[2] * .95, value[3]]))
 
+*/
+
 export default {
   name: 'app',
   components: {TradingVue},
+  props: ['coins'],
   data() {
     return {
       //overlays: [Overlays['Markers']],
@@ -10141,7 +10144,7 @@ export default {
       dc: new DataCube({
         "chart": {
           "type": "Candles",
-          "data": klineData
+          "data": this.coins.kline
         },
         "onchart": [
           {
@@ -10182,11 +10185,11 @@ export default {
               "z-index": 1
             }
           },
-          {
+          /*{
             "name": "DHistogram",
             "type": "DHistogram",
             "data": histogram
-          }
+          }*/
         ]
       }),
       width: window.innerWidth,
@@ -10207,7 +10210,10 @@ export default {
   methods: {
     changeWidth() {
       this.width = window.innerWidth
-    }
+    },
+    updateCart(e) {
+      console.log("EMITTED METHOD VALUE: "+ e)
+    },
   },
   created() {
     window.addEventListener("resize", this.changeWidth);
