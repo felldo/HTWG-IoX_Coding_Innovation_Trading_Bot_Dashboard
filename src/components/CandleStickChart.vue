@@ -10,7 +10,6 @@
                  :extensions="this.ext"
                  :legend-buttons="[
                     'display',
-                    'settings',
                     'up',
                     'down',
                     'add',
@@ -35,7 +34,7 @@ import {DataCube, TradingVue} from 'trading-vue-js'
 import Overlays from 'tvjs-overlays'
 import XP from 'tvjs-xp'
 import $ from "jquery";
-//import klineData from './data.json'
+import klineData from './data.json'
 
 
 //https://github.com/tvjsx/trading-vue-js
@@ -50,7 +49,7 @@ import $ from "jquery";
 //const histogram = []
 //klineData.forEach(value => histogram.push([value[0], value[2] * .95, value[3]]))
 
-const ddddd = []
+//const ddddd = []
 //https://github.com/tvjsx/trading-vue-js/blob/master/test/tests/DataHelper.vue
 //https://github.com/tvjsx/trading-vue-js/issues/119
 //https://github.com/tvjsx/trading-vue-js/tree/master/docs/datacube
@@ -66,7 +65,7 @@ export default {
       dc: new DataCube({
         "chart": {
           "type": "Candles",
-          "data": ddddd
+          "data": klineData
         },
         "onchart": [
           {
@@ -79,7 +78,7 @@ export default {
               [1648906200000, {"color": "lightblue", "sel": true, "$": 46876.84, "text": "!!", "textColor": "white"}]
             ]
           },
-          {
+          /*{
             "type": "TradesPlus",
             "name": "TradesPlus",
             "data": [
@@ -105,7 +104,7 @@ export default {
             "settings": {
               "z-index": 1
             }
-          },
+          },*/
           /*{
             "name": "DHistogram",
             "type": "DHistogram",

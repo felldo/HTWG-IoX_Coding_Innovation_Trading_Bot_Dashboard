@@ -3,37 +3,57 @@
     <Header/>
     <v-main>
       <br>
-      <br>
-      <v-autocomplete
-          :items="coins.coins"
-          v-model="selected"
-          solo
-          filled
-          rounded
-          chips
-          color="blue-grey lighten-2"
-          label="Select a coin"
-          item-text="symbol"
-          item-value="symbol"
-      >
-        <template v-slot:selection="data">
-          {{ data.item.symbol }}
-        </template>
-        <template v-slot:item="data">
-          <v-list-item-content>
-            <v-list-item-title v-html="data.item.symbol"></v-list-item-title>
-            <v-list-item-subtitle v-html="data.item.price +'$'"></v-list-item-subtitle>
-          </v-list-item-content>
-        </template>
-      </v-autocomplete>
+      <v-row>
+        <v-col>
+          <v-select
+              v-model="preselected_data"
+              :items="items"
+              label="Choose strategy"
+              filled
+              rounded
+              solo
+              class ="coinautocomplete"
+          ></v-select>
+        </v-col>
+        <v-col>
+          <v-autocomplete
+              :items="coins.coins"
+              v-model="selected"
+              solo
+              filled
+              rounded
+              chips
+              label="Choose crypto"
+              item-text="symbol"
+              item-value="symbol"
+              class ="coinautocomplete"
+          >
+            <template v-slot:selection="data">
+              {{ data.item.symbol }}
+            </template>
+            <template v-slot:item="data">
+              <v-list-item-content>
+                <v-list-item-title v-html="data.item.symbol"></v-list-item-title>
+                <v-list-item-subtitle v-html="data.item.price +'$'"></v-list-item-subtitle>
+              </v-list-item-content>
+            </template>
+          </v-autocomplete>
+        </v-col>
+      </v-row>
       <CandleStickChart :coins="coins" :selected="selected"></CandleStickChart>
+      <br>
+      <br>
+        <Tab class="mb-10" :coins="coins"></Tab>
     </v-main>
+    <Footer></Footer>
   </v-app>
 </template>
 
 <script>
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 import CandleStickChart from "@/components/CandleStickChart";
+import Tab from '@/components/Tab'
 //import $ from 'jquery'
 
 
@@ -43,9 +63,13 @@ export default {
   components: {
     CandleStickChart,
     Header,
+    Tab,
+    Footer,
   },
   data() {
     return {
+      preselected_data: 'Strategy #1',
+      items: ['Strategy #1', 'Strategy #2'],
       selected: [], // this is your v-model. and you watch any change to this.
       klineData: []
     }
@@ -10171,4 +10195,7 @@ export default {
 };
 </script>
 <style>
+.coinautocomplete{
+  z-index: 102;
+}
 </style>
