@@ -22,7 +22,6 @@
                     DEFAULT_LEN: 100,
                  }"
                  :overlays="overlays"
-
     />
   </div>
 
@@ -30,7 +29,8 @@
 
 
 <script>
-import {DataCube, TradingVue} from 'trading-vue-js'
+import {TradingVue, DataCube} from 'trading-vue-js'
+//import DataCube from 'trading-vue-js'
 import Overlays from 'tvjs-overlays'
 import XP from 'tvjs-xp'
 import $ from "jquery";
@@ -125,6 +125,7 @@ export default {
   mounted() {
     window.tv = this.$refs.tvjs;
     window.test = this;
+
   },
   watch: {
     selected(newSelectedArray, oldSelectedArray) {
@@ -138,43 +139,11 @@ export default {
           "name": newSelectedArray
         },
         success: function (data) {
-          console.log(data)
-          console.log("+++++++++++++++++++++++++++FETCHED KLINE CANDLESTICK")
-          self.dc = new DataCube({
-            "chart": {
-              "type": "Candles",
-              "data": data
-            },
-            "onchart": [
-              {
-                "name": "Markers",
-                "type": "Markers",
-                "settings": {},
-                "data": [
-                  [1648899000000, {"color": "#FF33FF", "sel": false, "$": 46636.9}],
-                  [1648902600000, {"sel": false, "$": 46754.73, "text": "&"}],
-                  [1648906200000, {
-                    "color": "lightblue",
-                    "sel": true,
-                    "$": 46876.84,
-                    "text": "!!",
-                    "textColor": "white"
-                  }]]
-              },
-              {
-                "type": "TradesPlus",
-                "name": "TradesPlus",
-                "data": [],
-                "settings": {
-                  "z-index": 1
-                }
-              },
-            ]
-          })
-
-          self.$refs.tvjs.resetChart(true)
+          self.dc.set('chart.data', data)
         }
       });
+
+
 
     }
   },
@@ -182,6 +151,7 @@ export default {
     changeWidth() {
       this.width = window.innerWidth
     },
+
   },
   created() {
     window.addEventListener("resize", this.changeWidth);
@@ -194,6 +164,4 @@ export default {
 </script>
 
 <style>
-.trading-vue {
-}
 </style>

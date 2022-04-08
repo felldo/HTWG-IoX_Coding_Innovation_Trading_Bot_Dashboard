@@ -35,7 +35,7 @@
           <v-data-table
               hide-default-footer
               :headers="headers"
-              :items="tableitems"
+              :items="tableItems"
           ></v-data-table>
         </v-tab-item>
       </v-tabs-items>
@@ -46,7 +46,7 @@
         >
 
           <v-row class="mt-3">
-          <v-col cols="2"></v-col>
+            <v-col cols="2"></v-col>
             <v-col cols="6">
               <v-autocomplete
                   :items="coins.coins"
@@ -65,8 +65,8 @@
             </v-col>
             <v-col cols="2">
               <v-switch
-                  v-model="switch1"
-                  :label="`Switch 2: ${switch1 == true ? 'Bot is running' : 'Bot is sleeping'}`"
+                  v-model="tradingSwitch"
+                  :label="`Switch 2: ${tradingSwitch === true ? 'Bot is running' : 'Bot is sleeping'}`"
                   inset
                   color="success"
                   class="custom-red"
@@ -84,6 +84,8 @@
 </template>
 
 <script>
+import $ from "jquery";
+
 export default {
   name: "Tab.vue",
   props: ['coins'],
@@ -91,7 +93,7 @@ export default {
     return {
       selectedTradeCoins: [],
       tab: null,
-      switch1: false,
+      tradingSwitch: false,
       headers: [
         {
           text: 'Description',
@@ -101,39 +103,53 @@ export default {
         },
         {text: 'Value', value: 'value'},
       ],
-      tableitems: [
+      tableItems: [
         {
           name: 'Starting balance',
-          value: "100k",
+          value: "0",
         },
         {
           name: 'Current balance',
-          value: "100k",
+          value: "0",
         },
         {
           name: 'Amount of buys Strategy #1',
-          value: "100k",
+          value: "0",
         },
         {
           name: 'Amount of sells Strategy #1',
-          value: "100k",
+          value: "0",
         },
         {
           name: 'Amount of buys Strategy #1',
-          value: "100k",
+          value: "0",
         },
         {
           name: 'Amount of sells Strategy #2',
-          value: "100k",
+          value: "0",
         },
         {
           name: 'Runtime of bot',
-          value: "100k",
+          value: "0",
         }
       ],
     }
   },
   watch: {
+    tradingSwitch(newSelectedArray, oldSelectedArray) {
+      console.log("WATCH NEW TRADE SWITCH STATE: " + newSelectedArray);
+      console.log("WATCH OLD TRADE SWITCH STATE: " + oldSelectedArray);
+      $.ajax({
+        url: "http://localhost:8000/dashboard/bot_trading/",
+        type: 'post',
+        data: {
+          "trading": newSelectedArray
+        },
+        success: function (data) {
+          console.log("CHANGED TRADING STATE " + data)
+        }
+      });
+    },
     selectedTradeCoins(newSelectedArray, oldSelectedArray) {
       console.log("WATCH NEW TRADE: " + newSelectedArray);
       console.log("WATCH OLD TRADE: " + oldSelectedArray);
@@ -141,9 +157,37 @@ export default {
       // added or removed, and fire subsequent methods accordingly.
     },
   },
+  mounted: function () {
+    const self = this
+    $.ajax({
+      url: "http://localhost:8000/dashboard/bot_trading/",
+      type: 'get',
+      success: function (data) {
+        console.log(data)
+        self.tradingSwitch = data.trading
+      }
+    });
+    window.setInterval(() => {
+      this.updateOverview()
+    }, 5000)
+  },
+  methods: {
+    updateOverview() {
+      const self = this
+      $.ajax({
+        url: "http://localhost:8000/dashboard/overview/",
+        type: 'get',
+        success: function (data) {
+          console.log(data)
+          self.tableItems[0].value = data.startBalance
+          self.tableItems[1].value = data.currentBalance
+          self.tableItems[6].value = data.uptime
+        }
+      });
+    },
+  }
 }
 </script>
 
 <style scoped>
-
 </style>
