@@ -136,23 +136,26 @@ export default {
     }
   },
   watch: {
-    tradingSwitch(newSelectedArray, oldSelectedArray) {
-      console.log("WATCH NEW TRADE SWITCH STATE: " + newSelectedArray);
-      console.log("WATCH OLD TRADE SWITCH STATE: " + oldSelectedArray);
+    tradingSwitch(newSwitchState, oldSwitchState) {
+      console.log("WATCH NEW TRADE SWITCH STATE: " + newSwitchState);
+      console.log("WATCH OLD TRADE SWITCH STATE: " + oldSwitchState);
+      console.log("selectedTraidCoins: " + this.selectedTradeCoins);
       $.ajax({
         url: "http://localhost:8000/dashboard/bot_trading/",
-        type: 'post',
+        type: 'POST',
         data: {
-          "trading": newSelectedArray
+          'trading': this.selectedTradeCoins,
+          tradingState: this.tradingSwitch
         },
+        dataType: 'json',
         success: function (data) {
           console.log("CHANGED TRADING STATE " + data)
         }
       });
     },
-    selectedTradeCoins(newSelectedArray, oldSelectedArray) {
-      console.log("WATCH NEW TRADE: " + newSelectedArray);
-      console.log("WATCH OLD TRADE: " + oldSelectedArray);
+    selectedTradeCoins(newCoinsArray, oldCoinsArray) {
+      console.log("WATCH NEW TRADE: " + newCoinsArray);
+      console.log("WATCH OLD TRADE: " + oldCoinsArray);
       // so now comparing your old to new array you would know if a state got
       // added or removed, and fire subsequent methods accordingly.
     },
@@ -169,7 +172,7 @@ export default {
     });
     window.setInterval(() => {
       this.updateOverview()
-    }, 5000)
+    }, 50000)
   },
   methods: {
     updateOverview() {
