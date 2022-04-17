@@ -46,8 +46,7 @@
         >
 
           <v-row class="mt-3">
-            <v-col cols="2"></v-col>
-            <v-col cols="6">
+            <v-col cols="4">
               <v-autocomplete
                   :items="coins.coins"
                   v-model="selectedTradeCoins"
@@ -63,17 +62,71 @@
                   class="coinautocomplete"
               ></v-autocomplete>
             </v-col>
+          </v-row>
+
+          <v-row class="mt-3">
+            <v-col cols="6">
+              <v-container fluid>
+                <v-row align="center">
+                  <v-col cols="2">
+                    <v-subheader>
+                      Interval to trade in
+                    </v-subheader>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-select
+                        v-model="intervalSelect"
+                        :items="intervalItems"
+                        item-text="interval"
+                        item-value="value"
+                        label="Select"
+                        persistent-hint
+                        return-object
+                        single-line
+                    ></v-select>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-col>
+          </v-row>
+
+          <v-row class="mt-3">
+            <v-col cols="6">
+              <v-container fluid>
+                <v-row align="center">
+                  <v-col cols="2">
+                    <v-subheader>
+                      Trade Algorithm
+                    </v-subheader>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-select
+                        v-model="tradeAlgorithmSelect"
+                        :items="tradeAlgorithmItems"
+                        item-text="name"
+                        item-value="value"
+                        label="Select"
+                        persistent-hint
+                        return-object
+                        single-line
+                    ></v-select>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-col>
+          </v-row>
+
+          <v-row class="mt-3 pl-8">
             <v-col cols="2">
               <v-switch
                   v-model="tradingSwitch"
-                  :label="`Switch 2: ${tradingSwitch === true ? 'Bot is running' : 'Bot is sleeping'}`"
+                  :label="`${tradingSwitch === true ? 'Bot is running' : 'Bot is sleeping'}`"
                   inset
                   color="success"
                   class="custom-red"
               >
               </v-switch>
             </v-col>
-
           </v-row>
 
         </v-tab-item>
@@ -91,6 +144,29 @@ export default {
   props: ['coins'],
   data() {
     return {
+      intervalSelect: {interval: '1 MINUTE', value: '1m'},
+      intervalItems: [
+        {interval: '1 MINUTE', value: '1m'},
+        {interval: '3 MINUTES', value: '3m'},
+        {interval: '5 MINUTES', value: '5m'},
+        {interval: '15 MINUTES', value: '15m'},
+        {interval: '30 MINUTES', value: '30m'},
+        {interval: '1 HOUR', value: '1h'},
+        {interval: '2 HOURS', value: '2h'},
+        {interval: '4 HOURS', value: '4h'},
+        {interval: '6 HOURS', value: '6h'},
+        {interval: '8 HOURS', value: '8h'},
+        {interval: '12 HOURS', value: '12h'},
+        {interval: '1 DAY', value: '1d'},
+        {interval: '3 DAYS', value: '3h'},
+        {interval: '1 WEEK', value: '1w'},
+        {interval: '1 MONTH', value: '1M'},
+      ],
+      tradeAlgorithmSelect: {name: '1 MINUTE', value: 'BB'},
+      tradeAlgorithmItems: [
+        {name: 'BollingerBands', value: 'BB'},
+        {name: 'Moving Average Convergence and Divergence', value: 'MACD'},
+      ],
       selectedTradeCoins: [],
       tab: null,
       tradingSwitch: false,
@@ -145,7 +221,9 @@ export default {
         type: 'POST',
         data: {
           'trading': this.selectedTradeCoins,
-          tradingState: this.tradingSwitch
+          'tradingState': this.tradingSwitch,
+          'interval': this.intervalSelect.value,
+          'strategy': this.tradeAlgorithmSelect.value
         },
         dataType: 'json',
         success: function (data) {
