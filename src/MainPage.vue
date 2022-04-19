@@ -3,22 +3,18 @@
     <Header/>
     <v-main>
       <br>
-      <v-row>
-        <v-col>
+      <v-row align="center" class="ml-5 mr-5 abovechart">
+        <v-col cols="2">
           <v-select
               v-model="chartIntervalDefault"
               :items="intervalItems"
               label="Choose interval"
               item-text="interval"
               item-value="value"
-              filled
-              rounded
-              solo
-              class="abovechart"
           ></v-select>
         </v-col>
 
-        <v-col>
+        <v-col cols="2">
           <v-menu
               ref="menu"
               v-model="menu"
@@ -55,17 +51,12 @@
               </v-btn>
             </v-date-picker>
           </v-menu>
-
         </v-col>
 
-        <v-col>
+        <v-col cols="2">
           <v-autocomplete
               :items="coins.coins"
               v-model="selected"
-              solo
-              filled
-              rounded
-              chips
               label="Choose crypto"
               item-text="symbol"
               item-value="symbol"
@@ -82,8 +73,17 @@
             </template>
           </v-autocomplete>
         </v-col>
+
+        <v-col align="left">
+          <v-btn
+              color="primary"
+              elevation="2"
+              v-on:click="updateChart"
+          >Update chart
+          </v-btn>
+        </v-col>
       </v-row>
-      <CandleStickChart :coins="coins" :selected="selected"></CandleStickChart>
+      <CandleStickChart :dc="dc"></CandleStickChart>
       <br>
       <br>
       <Tab class="mb-10" :coins="coins" :intervalItems="intervalItems"></Tab>
@@ -150,6 +150,9 @@ export default {
   },
   methods: {
     allowedDates: val => val <= today,
+    updateChart(event){
+      console.log(event)
+    }
   },
   computed: {
     dateRangeText () {
