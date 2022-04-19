@@ -125,7 +125,6 @@ export default {
   mounted() {
     window.tv = this.$refs.tvjs;
     window.test = this;
-
   },
   watch: {
     selected(newSelectedArray, oldSelectedArray) {
@@ -142,9 +141,6 @@ export default {
           self.dc.set('chart.data', data)
         }
       });
-
-
-
     }
   },
   methods: {

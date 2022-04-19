@@ -29,7 +29,7 @@ initializeApp(firebaseConfig);
 
 const coins = {
     coins: [],
-    kline: [[]]
+    tradeableCoins: []
 }
 
 $.ajax({
@@ -38,6 +38,7 @@ $.ajax({
     success: function (data) {
         console.log(data)
         coins.coins = data
+        coins.tradeableCoins = data.filter(word => word.symbol.endsWith("BUSD"))
         //data.forEach(x => console.log(x))
         //const jsonData = JSON.parse(data)
         //console.log(jsonData)

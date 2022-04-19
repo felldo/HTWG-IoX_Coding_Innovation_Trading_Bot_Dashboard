@@ -48,7 +48,7 @@
           <v-row class="mt-3">
             <v-col cols="4">
               <v-autocomplete
-                  :items="coins.coins"
+                  :items="coins.tradeableCoins"
                   v-model="selectedTradeCoins"
                   solo
                   filled
@@ -75,7 +75,7 @@
                   </v-col>
                   <v-col cols="5">
                     <v-select
-                        v-model="intervalSelect"
+                        v-model="intervalSelectDefault"
                         :items="intervalItems"
                         item-text="interval"
                         item-value="value"
@@ -141,31 +141,14 @@ import $ from "jquery";
 
 export default {
   name: "Tab.vue",
-  props: ['coins'],
+  props: ['coins','intervalItems'],
   data() {
     return {
-      intervalSelect: {interval: '1 MINUTE', value: '1m'},
-      intervalItems: [
-        {interval: '1 MINUTE', value: '1m'},
-        {interval: '3 MINUTES', value: '3m'},
-        {interval: '5 MINUTES', value: '5m'},
-        {interval: '15 MINUTES', value: '15m'},
-        {interval: '30 MINUTES', value: '30m'},
-        {interval: '1 HOUR', value: '1h'},
-        {interval: '2 HOURS', value: '2h'},
-        {interval: '4 HOURS', value: '4h'},
-        {interval: '6 HOURS', value: '6h'},
-        {interval: '8 HOURS', value: '8h'},
-        {interval: '12 HOURS', value: '12h'},
-        {interval: '1 DAY', value: '1d'},
-        {interval: '3 DAYS', value: '3h'},
-        {interval: '1 WEEK', value: '1w'},
-        {interval: '1 MONTH', value: '1M'},
-      ],
+      intervalSelectDefault: {interval: '1 MINUTE', value: '1m'},
       tradeAlgorithmSelect: {name: '1 MINUTE', value: 'BB'},
       tradeAlgorithmItems: [
         {name: 'BollingerBands', value: 'BB'},
-        {name: 'Moving Average Convergence and Divergence', value: 'MACD'},
+        {name: 'Moving Average Convergence and Divergence (MACD)', value: 'MACD'},
       ],
       selectedTradeCoins: [],
       tab: null,
@@ -222,7 +205,7 @@ export default {
         data: {
           'trading': this.selectedTradeCoins,
           'tradingState': this.tradingSwitch,
-          'interval': this.intervalSelect.value,
+          'interval': this.intervalSelectDefault.value,
           'strategy': this.tradeAlgorithmSelect.value
         },
         dataType: 'json',
