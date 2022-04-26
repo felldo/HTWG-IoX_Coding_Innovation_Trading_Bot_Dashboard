@@ -165,18 +165,22 @@ export default {
         });
         return;
       }
-      if (self.dates.length != 2) {
-        iziToast.error({
-          title: 'Date is not a range',
-          message: "Please select a date range"
-        });
-        return;
-      }
-
-      this.updateChartLoading = true
 
       const nextDay = new Date()
       nextDay.setDate(new Date(self.dates[1]).getDate() + 1)
+
+      let endDate;
+      if (self.dates.length == 1) {
+        endDate = new Date(self.dates[0]).getDate() + 1
+      }else{
+        if(this.dates[1] === today){
+          endDate = new Date().getTime()
+        }else{
+          endDate = nextDay.getTime()
+        }
+      }
+
+      this.updateChartLoading = true
 
       let calcInterval = ""
       if (typeof this.chartIntervalDefault === 'string' || this.chartIntervalDefault instanceof String) {
@@ -192,7 +196,7 @@ export default {
           "symbol": self.selectedCoin,
           "interval": calcInterval,
           "startDate": new Date(self.dates[0]).getTime(),
-          "endDate": self.dates[1] === today ? new Date().getTime() : nextDay.getTime()
+          "endDate": endDate
         },
         success: function (data) {
           self.klineData = data

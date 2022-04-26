@@ -45,14 +45,12 @@
             :value="'tab-2'"
         >
 
-          <v-row class="mt-3">
-            <v-col cols="4">
+          <v-row class="mt-3" align="center" justify="center">
+            <v-col cols="6">
               <v-autocomplete
                   :items="coins.tradeableCoins"
                   v-model="selectedTradeCoins"
-                  solo
-                  filled
-                  rounded
+                  :disabled="botConfigDisabled"
                   chips
                   multiple
                   clearable
@@ -64,11 +62,11 @@
             </v-col>
           </v-row>
 
-          <v-row class="mt-3">
+          <v-row class="mt-3" align="center" justify="center">
             <v-col cols="6">
               <v-container fluid>
                 <v-row align="center">
-                  <v-col cols="2">
+                  <v-col cols="3">
                     <v-subheader>
                       Interval to trade in
                     </v-subheader>
@@ -80,6 +78,7 @@
                         item-text="interval"
                         item-value="value"
                         label="Select"
+                        :disabled="botConfigDisabled"
                         persistent-hint
                         return-object
                         single-line
@@ -90,11 +89,11 @@
             </v-col>
           </v-row>
 
-          <v-row class="mt-3">
+          <v-row class="mt-3" align="center" justify="center">
             <v-col cols="6">
               <v-container fluid>
                 <v-row align="center">
-                  <v-col cols="2">
+                  <v-col cols="3">
                     <v-subheader>
                       Trade Algorithm
                     </v-subheader>
@@ -106,6 +105,7 @@
                         item-text="name"
                         item-value="value"
                         label="Select"
+                        :disabled="botConfigDisabled"
                         persistent-hint
                         return-object
                         single-line
@@ -116,11 +116,13 @@
             </v-col>
           </v-row>
 
-          <v-row class="mt-3 pl-8">
-            <v-col cols="2">
+          <v-row class="mt-3 pl-8" align="center" justify="center">
+            <v-col cols="3">
               <v-switch
                   v-model="tradingSwitch"
                   :label="`${tradingSwitch === true ? 'Bot is running' : 'Bot is sleeping'}`"
+                  @change="changeState()"
+                  :disabled="botStartSwitchDisabled"
                   inset
                   color="success"
                   class="custom-red"
@@ -128,7 +130,6 @@
               </v-switch>
             </v-col>
           </v-row>
-
         </v-tab-item>
       </v-tabs-items>
     </v-card>
@@ -138,12 +139,15 @@
 
 <script>
 import $ from "jquery";
+//import iziToast from 'izitoast'
 
 export default {
   name: "Tab.vue",
-  props: ['coins','intervalItems'],
+  props: ['coins', 'intervalItems'],
   data() {
     return {
+      botStartSwitchDisabled: true,
+      botConfigDisabled: false,
       intervalSelectDefault: {interval: '1 MINUTE', value: '1m'},
       tradeAlgorithmSelect: {name: '1 MINUTE', value: 'BB'},
       tradeAlgorithmItems: [
@@ -195,10 +199,40 @@ export default {
     }
   },
   watch: {
-    tradingSwitch(newSwitchState, oldSwitchState) {
-      console.log("WATCH NEW TRADE SWITCH STATE: " + newSwitchState);
-      console.log("WATCH OLD TRADE SWITCH STATE: " + oldSwitchState);
-      console.log("selectedTraidCoins: " + this.selectedTradeCoins);
+    selectedTradeCoins(newCoinsArray) {
+      if(newCoinsArray.length > 0){
+        this.botStartSwitchDisabled = false
+        this.botConfigDisabled = false
+      }else{
+        this.botStartSwitchDisabled = true
+      }
+    },
+  },
+  mounted: function () {
+    const self = this
+    $.ajax({
+      url: "http://localhost:8000/dashboard/bot_trading/",
+      type: 'get',
+      success: function (data) {
+        self.tradingSwitch = data.trading
+        self.selectedTradeCoins = data.coins
+
+        if(self.tradingSwitch){
+          self.$nextTick(function () {
+            self.botConfigDisabled = true
+          })
+        }
+
+      }
+    });
+    window.setInterval(() => {
+      this.updateOverview()
+    }, 50000)
+  },
+  methods: {
+    changeState(){
+      this.botConfigDisabled = this.tradingSwitch
+
       $.ajax({
         url: "http://localhost:8000/dashboard/bot_trading/",
         type: 'POST',
@@ -214,28 +248,6 @@ export default {
         }
       });
     },
-    selectedTradeCoins(newCoinsArray, oldCoinsArray) {
-      console.log("WATCH NEW TRADE: " + newCoinsArray);
-      console.log("WATCH OLD TRADE: " + oldCoinsArray);
-      // so now comparing your old to new array you would know if a state got
-      // added or removed, and fire subsequent methods accordingly.
-    },
-  },
-  mounted: function () {
-    const self = this
-    $.ajax({
-      url: "http://localhost:8000/dashboard/bot_trading/",
-      type: 'get',
-      success: function (data) {
-        console.log(data)
-        self.tradingSwitch = data.trading
-      }
-    });
-    window.setInterval(() => {
-      this.updateOverview()
-    }, 50000)
-  },
-  methods: {
     updateOverview() {
       const self = this
       $.ajax({
