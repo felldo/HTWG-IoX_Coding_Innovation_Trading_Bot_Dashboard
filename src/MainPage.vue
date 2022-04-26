@@ -56,7 +56,7 @@
         <v-col cols="2">
           <v-autocomplete
               :items="coins.coins"
-              v-model="selected"
+              v-model="selectedCoin"
               label="Choose crypto"
               item-text="symbol"
               item-value="symbol"
@@ -79,11 +79,13 @@
               color="primary"
               elevation="2"
               v-on:click="updateChart"
+              :loading="updateChartLoading"
+              :disabled="updateChartLoading"
           >Update chart
           </v-btn>
         </v-col>
       </v-row>
-      <CandleStickChart :dc="dc"></CandleStickChart>
+      <CandleStickChart :klineData="klineData"></CandleStickChart>
       <br>
       <br>
       <Tab class="mb-10" :coins="coins" :intervalItems="intervalItems"></Tab>
@@ -97,19 +99,21 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import CandleStickChart from "@/components/CandleStickChart";
 import Tab from '@/components/Tab'
+import $ from "jquery";
+import iziToast from 'izitoast'
 //import $ from 'jquery'
 
 var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = today.getFullYear();
+const dd = String(today.getDate()).padStart(2, '0');
+const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+const yyyy = today.getFullYear();
 
 today = yyyy + '-' + mm + '-' + dd;
 
 var monthAgo = new Date();
-var ddAgo = String(monthAgo.getDate()).padStart(2, '0');
-var mmAgo = String(monthAgo.getMonth()).padStart(2, '0'); //January is 0!
-var yyyyAgo = monthAgo.getFullYear();
+const ddAgo = String(monthAgo.getDate()).padStart(2, '0');
+const mmAgo = String(monthAgo.getMonth()).padStart(2, '0'); //January is 0!
+const yyyyAgo = monthAgo.getFullYear();
 
 monthAgo = yyyyAgo + '-' + mmAgo + '-' + ddAgo;
 
@@ -144,19 +148,65 @@ export default {
         {interval: '1 WEEK', value: '1w'},
         {interval: '1 MONTH', value: '1M'},
       ],
-      selected: [], // this is your v-model. and you watch any change to this.
-      klineData: []
+      selectedCoin: [], //coin der für das candlestickchart ausgewählt wird
+      klineData: [],
+      updateChartLoading: false,
     }
   },
   methods: {
     allowedDates: val => val <= today,
-    updateChart(event){
-      console.log(event)
+    updateChart() {
+      //fetch data for candlestickchart
+      const self = this;
+      if (this.selectedCoin == "") {
+        iziToast.error({
+          title: 'Selected Coin is empty',
+          message: "Please select a coin"
+        });
+        return;
+      }
+      if (self.dates.length != 2) {
+        iziToast.error({
+          title: 'Date is not a range',
+          message: "Please select a date range"
+        });
+        return;
+      }
+
+      this.updateChartLoading = true
+
+      const nextDay = new Date()
+      nextDay.setDate(new Date(self.dates[1]).getDate() + 1)
+
+      let calcInterval = ""
+      if (typeof this.chartIntervalDefault === 'string' || this.chartIntervalDefault instanceof String) {
+        calcInterval = this.chartIntervalDefault
+      } else {
+        calcInterval = this.chartIntervalDefault.value
+      }
+
+      $.ajax({
+        url: "http://localhost:8000/dashboard/kline/",
+        type: 'get',
+        data: {
+          "symbol": self.selectedCoin,
+          "interval": calcInterval,
+          "startDate": new Date(self.dates[0]).getTime(),
+          "endDate": self.dates[1] === today ? new Date().getTime() : nextDay.getTime()
+        },
+        success: function (data) {
+          self.klineData = data
+          self.updateChartLoading = false
+        },
+        error: function(){
+          self.updateChartLoading = false
+        }
+      });
     }
   },
   computed: {
-    dateRangeText () {
-      if(this.dates[0] > this.dates[1]){
+    dateRangeText() {
+      if (this.dates[0] > this.dates[1]) {
         // eslint-disable-next-line vue/no-side-effects-in-computed-properties
         this.dates = this.dates.reverse()
       }

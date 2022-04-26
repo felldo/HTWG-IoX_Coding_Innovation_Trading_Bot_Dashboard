@@ -33,8 +33,7 @@ import {TradingVue, DataCube} from 'trading-vue-js'
 //import DataCube from 'trading-vue-js'
 import Overlays from 'tvjs-overlays'
 import XP from 'tvjs-xp'
-import $ from "jquery";
-import klineData from './data.json'
+
 
 
 //https://github.com/tvjsx/trading-vue-js
@@ -56,7 +55,7 @@ import klineData from './data.json'
 export default {
   name: 'app',
   components: {TradingVue},
-  props: ['coins', 'selected'],
+  props: ['coins', 'selected', 'klineData'],
   data() {
     return {
       //overlays: [Overlays['Markers']],
@@ -65,7 +64,7 @@ export default {
       dc: new DataCube({
         "chart": {
           "type": "Candles",
-          "data": klineData
+          "data": this.klineData
         },
         "onchart": [
           {
@@ -127,20 +126,13 @@ export default {
     window.test = this;
   },
   watch: {
-    selected(newSelectedArray, oldSelectedArray) {
-      console.log("++++++++++++++ WATCH NEW CANDLESTICK: " + newSelectedArray);
-      console.log("++++++++++++++ WATCH OLD CANDLESTICK: " + oldSelectedArray);
-      let self = this
-      $.ajax({
-        url: "http://localhost:8000/dashboard/kline/",
-        type: 'get',
-        data: {
-          "name": newSelectedArray
-        },
-        success: function (data) {
-          self.dc.set('chart.data', data)
-        }
-      });
+    klineData(newValue, oldValue){
+      console.log("#################################")
+      console.log(newValue)
+      console.log("-----")
+      console.log(oldValue)
+
+      this.dc.set('chart.data', newValue)
     }
   },
   methods: {

@@ -6,11 +6,6 @@
               aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav justify-content-center me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a href="#" class="nav-link" @click="redirectAccount()">Account</a></li>
-        </ul>
-      </div>
     </div>
   </nav>
 </template>

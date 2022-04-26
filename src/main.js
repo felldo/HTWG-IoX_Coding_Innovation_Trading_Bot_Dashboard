@@ -36,13 +36,11 @@ $.ajax({
     url: "http://localhost:8000/dashboard/tickers/",
     type: 'get',
     success: function (data) {
-        console.log(data)
         coins.coins = data
         coins.tradeableCoins = data.filter(word => word.symbol.endsWith("BUSD"))
         //data.forEach(x => console.log(x))
         //const jsonData = JSON.parse(data)
         //console.log(jsonData)
-        console.log("FETCHED COINS")
     }
 });
 
