@@ -55,9 +55,10 @@ import XP from 'tvjs-xp'
 export default {
   name: 'app',
   components: {TradingVue},
-  props: ['coins', 'selected', 'klineData'],
+  props: ['coins', 'selected', 'klineData', 'klineMarker'],
   data() {
     return {
+      markers: [],
       //overlays: [Overlays['Markers']],
       ext: Object.values(XP),
       overlays: Object.values(Overlays),
@@ -66,18 +67,18 @@ export default {
           "type": "Candles",
           "data": this.klineData
         },
-        "onchart": [
+        "onchart": [/*
           {
             "name": "Markers",
             "type": "Markers",
             "settings": {},
-            "data": [
+            "data": [this.markers
               [1648899000000, {"color": "#FF33FF", "sel": false, "$": 46636.9}],
               [1648902600000, {"sel": false, "$": 46754.73, "text": "&"}],
               [1648906200000, {"color": "lightblue", "sel": true, "$": 46876.84, "text": "!!", "textColor": "white"}]
             ]
           },
-          /*{
+          {
             "type": "TradesPlus",
             "name": "TradesPlus",
             "data": [
@@ -103,8 +104,8 @@ export default {
             "settings": {
               "z-index": 1
             }
-          },*/
-          /*{
+          },
+          {
             "name": "DHistogram",
             "type": "DHistogram",
             "data": histogram
@@ -126,12 +127,29 @@ export default {
     window.test = this;
   },
   watch: {
-    klineData(newValue, oldValue){
-      console.log("#################################")
-      console.log(newValue)
-      console.log("-----")
-      console.log(oldValue)
+    klineMarker(){
+      console.log("SET MARKER")
 
+      const x = [
+          {
+            "name": "Markers",
+            "type": "Markers",
+            "settings": {},
+            "data": [
+              [1650977946000, {"color": "#FF33FF", "sel": false, "$": 38955.9}],
+              [1650978946000, {"sel": false, "$": 40955.73, "text": "&"}],
+              [1650979946000, {"color": "lightblue", "sel": true, "$": 46876.84, "text": "!!", "textColor": "white"}]
+            ]
+          }]
+
+
+      this.dc.set('onchart', x)
+
+      console.log(this.dc.get('onchart'))
+      //this.markers = [[1650977946000, {"color": "#FF33FF", "sel": false, "$": 38955.93000000}]]
+      //this.dc.set('onchart.Markers.data', [[1650977946000, {"color": "#FF33FF", "sel": false, "$": 38955.93000000}]])
+    },
+    klineData(newValue){
       this.dc.set('chart.data', newValue)
     }
   },

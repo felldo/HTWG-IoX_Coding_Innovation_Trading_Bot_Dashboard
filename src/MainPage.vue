@@ -85,7 +85,7 @@
           </v-btn>
         </v-col>
       </v-row>
-      <CandleStickChart :klineData="klineData"></CandleStickChart>
+      <CandleStickChart :klineData="klineData" :klineMarker="klineMarker"></CandleStickChart>
       <br>
       <br>
       <Tab class="mb-10" :coins="coins" :intervalItems="intervalItems"></Tab>
@@ -150,6 +150,7 @@ export default {
       ],
       selectedCoin: [], //coin der für das candlestickchart ausgewählt wird
       klineData: [],
+      klineMarker: [],
       updateChartLoading: false,
     }
   },
@@ -171,7 +172,10 @@ export default {
 
       let endDate;
       if (self.dates.length == 1) {
-        endDate = new Date(self.dates[0]).getDate() + 1
+
+        let temp = new Date()
+        temp.setDate(new Date(self.dates[0]).getDate() + 1)
+        endDate = temp.getTime()
       }else{
         if(this.dates[1] === today){
           endDate = new Date().getTime()
@@ -199,7 +203,8 @@ export default {
           "endDate": endDate
         },
         success: function (data) {
-          self.klineData = data
+          self.klineData = data.klineData
+          self.klineMarker = data.klineMarker
           self.updateChartLoading = false
         },
         error: function(){
