@@ -20,11 +20,11 @@ jobs:
           command: echo "$DOCKER_ACCESS_TOKEN" | docker login --username $DOCKER_USER --password-stdin
       - run:
           name: Building docker image
-          command: docker build -t killelitemaste/checkers .
+          command: docker build -t killelitemaste/iox-website .
       - run:
           name: Publishing Docker image to registry
           command: |
-            docker push $DOCKER_USER/checkers
+            docker push $DOCKER_USER/iox-website
   deploy:
     docker:
       # specify the version you desire here
@@ -39,8 +39,8 @@ jobs:
           command: >
             ssh -o StrictHostKeyChecking=no -p222 $SSH_USER@$SSH_HOST "
             cd /home/domme/bettertickets;
-            docker-compose pull checkers &&
-            docker-compose up -d --no-deps checkers"
+            docker-compose pull iox-website &&
+            docker-compose up -d --no-deps iox-website"
 
 workflows:
   version: 2

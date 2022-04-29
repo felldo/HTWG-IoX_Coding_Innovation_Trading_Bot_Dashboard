@@ -13,7 +13,7 @@
           <li>Daniel Wollmann</li>
           <li>Vlad Bratulescu</li>
           <li>Kevin Castorina</li>
-          <li>Mahrco Mollo</li>
+          <li>Marco Mollo</li>
         </ul>
       </v-col>
     </v-row>

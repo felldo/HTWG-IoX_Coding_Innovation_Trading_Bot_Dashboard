@@ -5,6 +5,7 @@
         background-color="bg-dark"
         centered
         dark
+        grow
         icons-and-text
     >
       <v-tabs-slider></v-tabs-slider>
@@ -18,13 +19,7 @@
         Bot configuration
         <v-icon>mdi-cog</v-icon>
       </v-tab>
-
-      <v-tab href="#tab-3">
-        Trade history
-        <v-icon>mdi-chart-line</v-icon>
-      </v-tab>
     </v-tabs>
-
 
     <v-card class="pl-16 pr-16 align-center pb-10">
       <v-tabs-items v-model="tab">
@@ -37,14 +32,16 @@
               :headers="headers"
               :items="tableItems"
           ></v-data-table>
+          <br>
+          <p>Server uptime: {{ serverUpTime }}</p>
         </v-tab-item>
       </v-tabs-items>
+
       <v-tabs-items v-model="tab">
         <v-tab-item
             :key="2"
             :value="'tab-2'"
         >
-
           <v-row class="mt-3" align="center" justify="center">
             <v-col cols="6">
               <v-autocomplete
@@ -139,7 +136,7 @@
 
 <script>
 import $ from "jquery";
-//import iziToast from 'izitoast'
+import Vue from 'vue'
 
 export default {
   name: "Tab.vue",
@@ -159,51 +156,25 @@ export default {
       tradingSwitch: false,
       headers: [
         {
-          text: 'Description',
+          text: 'Coin',
           align: 'start',
           sortable: false,
-          value: 'name',
+          value: 'SYMBOL',
         },
-        {text: 'Value', value: 'value'},
+        {text: 'Current Balance', sortable: false, value: 'MONEY'},
+        {text: 'Amount of coins', sortable: false, value: 'QUANTITY'},
+        {text: 'Net worth Balance + Coins', sortable: false, value: 'NET'},
       ],
-      tableItems: [
-        {
-          name: 'Starting balance',
-          value: "0",
-        },
-        {
-          name: 'Current balance',
-          value: "0",
-        },
-        {
-          name: 'Amount of buys Strategy #1',
-          value: "0",
-        },
-        {
-          name: 'Amount of sells Strategy #1',
-          value: "0",
-        },
-        {
-          name: 'Amount of buys Strategy #1',
-          value: "0",
-        },
-        {
-          name: 'Amount of sells Strategy #2',
-          value: "0",
-        },
-        {
-          name: 'Runtime of bot',
-          value: "0",
-        }
-      ],
+      tableItems: [],
+      serverUpTime: 0,
     }
   },
   watch: {
     selectedTradeCoins(newCoinsArray) {
-      if(newCoinsArray.length > 0){
+      if (newCoinsArray.length > 0) {
         this.botStartSwitchDisabled = false
         this.botConfigDisabled = false
-      }else{
+      } else {
         this.botStartSwitchDisabled = true
       }
     },
@@ -211,13 +182,13 @@ export default {
   mounted: function () {
     const self = this
     $.ajax({
-      url: "http://localhost:8000/dashboard/bot_trading/",
+      url: `${Vue.prototype.$backendUrl}/dashboard/bot_trading/`,
       type: 'get',
       success: function (data) {
         self.tradingSwitch = data.trading
         self.selectedTradeCoins = data.coins
 
-        if(self.tradingSwitch){
+        if (self.tradingSwitch) {
           self.$nextTick(function () {
             self.botConfigDisabled = true
           })
@@ -225,16 +196,17 @@ export default {
 
       }
     });
+    this.updateOverview()
     window.setInterval(() => {
       this.updateOverview()
-    }, 50000)
+    }, 30 * 1000)
   },
   methods: {
-    changeState(){
+    changeState() {
       this.botConfigDisabled = this.tradingSwitch
 
       $.ajax({
-        url: "http://localhost:8000/dashboard/bot_trading/",
+        url: `${Vue.prototype.$backendUrl}/dashboard/bot_trading/`,
         type: 'POST',
         data: {
           'trading': this.selectedTradeCoins,
@@ -251,13 +223,11 @@ export default {
     updateOverview() {
       const self = this
       $.ajax({
-        url: "http://localhost:8000/dashboard/overview/",
+        url: `${Vue.prototype.$backendUrl}/dashboard/overview/`,
         type: 'get',
         success: function (data) {
-          console.log(data)
-          self.tableItems[0].value = data.startBalance
-          self.tableItems[1].value = data.currentBalance
-          self.tableItems[6].value = data.uptime
+          self.tableItems = data.wallet
+          self.serverUpTime = data.uptime
         }
       });
     },

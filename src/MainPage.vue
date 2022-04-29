@@ -101,7 +101,7 @@ import CandleStickChart from "@/components/CandleStickChart";
 import Tab from '@/components/Tab'
 import $ from "jquery";
 import iziToast from 'izitoast'
-//import $ from 'jquery'
+import Vue from 'vue'
 
 var today = new Date();
 const dd = String(today.getDate()).padStart(2, '0');
@@ -150,7 +150,7 @@ export default {
       ],
       selectedCoin: [], //coin der für das candlestickchart ausgewählt wird
       klineData: [],
-      klineMarker: [],
+      klineMarker: [[]],
       updateChartLoading: false,
     }
   },
@@ -176,10 +176,10 @@ export default {
         let temp = new Date()
         temp.setDate(new Date(self.dates[0]).getDate() + 1)
         endDate = temp.getTime()
-      }else{
-        if(this.dates[1] === today){
+      } else {
+        if (this.dates[1] === today) {
           endDate = new Date().getTime()
-        }else{
+        } else {
           endDate = nextDay.getTime()
         }
       }
@@ -194,7 +194,7 @@ export default {
       }
 
       $.ajax({
-        url: "http://localhost:8000/dashboard/kline/",
+        url: `${Vue.prototype.$backendUrl}/dashboard/kline/`,
         type: 'get',
         data: {
           "symbol": self.selectedCoin,
@@ -204,10 +204,14 @@ export default {
         },
         success: function (data) {
           self.klineData = data.klineData
-          self.klineMarker = data.klineMarker
+
+          const klineMarkerNew = []
+          data.klineMarker.forEach(value => klineMarkerNew.push([value.EVENT.E, value.ACTION === "BUY" ? 1:0, parseFloat(value.EVENT.k.c), value.ACTION]))
+
+          self.klineMarker = klineMarkerNew
           self.updateChartLoading = false
         },
-        error: function(){
+        error: function () {
           self.updateChartLoading = false
         }
       });
