@@ -12,7 +12,7 @@ const coins = {
 }
 
 if (process.env.NODE_ENV === 'production') {
-    Vue.prototype.$backendUrl = "https://iox.better-tickets.de"
+    Vue.prototype.$backendUrl = "http://iox-backend:8080"
 } else {
     Vue.prototype.$backendUrl = "http://localhost:8000"
 }
