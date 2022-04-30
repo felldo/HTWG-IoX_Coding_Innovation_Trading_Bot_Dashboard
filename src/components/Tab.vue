@@ -113,6 +113,27 @@
             </v-col>
           </v-row>
 
+          <v-row class="mt-3" align="center" justify="center">
+            <v-col cols="6">
+              <v-container>
+                <v-row align="center">
+                  <v-col cols="3">
+                    <div>
+                      <span class="font-weight-bold">Enter password</span>
+                    </div>
+                  </v-col>
+                  <v-col cols="5">
+                    <v-otp-input
+                        v-model="otp"
+                        :length="5"
+                        @change="onChangeOTP()"
+                    ></v-otp-input>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-col>
+          </v-row>
+
           <v-row class="mt-3 pl-8" align="center" justify="center">
             <v-col cols="3">
               <v-switch
@@ -137,6 +158,7 @@
 <script>
 import $ from "jquery";
 import Vue from 'vue'
+import MD5 from "crypto-js/md5"
 
 export default {
   name: "Tab.vue",
@@ -167,11 +189,15 @@ export default {
       ],
       tableItems: [],
       serverUpTime: 0,
+      //OTP
+      otp: '',
+      expectedOtp: '7787bb19d4563777f4cf83fba91dfbda',
+      passwordEquals: false
     }
   },
   watch: {
     selectedTradeCoins(newCoinsArray) {
-      if (newCoinsArray.length > 0) {
+      if (newCoinsArray.length > 0 && this.passwordEquals) {
         this.botStartSwitchDisabled = false
         this.botConfigDisabled = false
       } else {
@@ -202,6 +228,18 @@ export default {
     }, 30 * 1000)
   },
   methods: {
+    onChangeOTP () {
+      this.passwordEquals = MD5(this.otp).toString() === this.expectedOtp
+      if (this.selectedTradeCoins.length > 0 && this.passwordEquals && this.tradingSwitch) {
+        this.botStartSwitchDisabled = false
+        this.botConfigDisabled = true
+      } else if (this.selectedTradeCoins.length > 0 && this.passwordEquals) {
+        this.botStartSwitchDisabled = false
+        this.botConfigDisabled = false
+      } else {
+        this.botStartSwitchDisabled = true
+      }
+    },
     changeState() {
       this.botConfigDisabled = this.tradingSwitch
 
@@ -236,4 +274,7 @@ export default {
 </script>
 
 <style scoped>
+.position-relative {
+  position: relative;
+}
 </style>
