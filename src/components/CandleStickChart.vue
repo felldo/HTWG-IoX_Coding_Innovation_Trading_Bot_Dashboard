@@ -14,6 +14,7 @@
                     'down',
                     'add',
                     'remove',
+                    'settings',
                  ]"
                  :chart-config="{
                     TB_B_STYLE: 'line',
