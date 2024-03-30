@@ -23,7 +23,8 @@ $.ajax({
     type: 'get',
     success: function (data) {
         coins.coins = data
-        coins.tradeableCoins = data.filter(word => word.symbol.endsWith("BUSD"))
+        //coins.tradeableCoins = data.filter(word => word.symbol.endsWith("BUSD"))
+        coins.tradeableCoins = data
     }
 });
 
